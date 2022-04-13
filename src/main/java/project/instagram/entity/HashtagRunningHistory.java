@@ -17,9 +17,6 @@ import javax.persistence.TemporalType;
 @Table(name = "HashtagRunningSummaries")
 public class HashtagRunningHistory implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -118,7 +115,5 @@ public class HashtagRunningHistory implements Serializable{
 	public void setTransactionPackage(TransactionPackage transactionPackage) {
 		this.transactionPackage = transactionPackage;
 	}
-	
-	
 	
 }

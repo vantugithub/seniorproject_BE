@@ -22,9 +22,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class Hashtag implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -109,6 +106,5 @@ public class Hashtag implements Serializable{
 	public void setHashtagRunningHistories(Set<HashtagRunningHistory> hashtagRunningHistories) {
 		this.hashtagRunningHistories = hashtagRunningHistories;
 	}
-	
 	
 }

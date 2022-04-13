@@ -38,6 +38,36 @@ public class BlackHashtag {
 		this.staff = staff;
 	}
 
-	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Hashtag getHashtag() {
+		return hashtag;
+	}
+
+	public void setHashtag(Hashtag hashtag) {
+		this.hashtag = hashtag;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public Staff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
+	}
 	
 }

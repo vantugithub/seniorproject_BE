@@ -18,9 +18,6 @@ import javax.persistence.TemporalType;
 @Table(name = "HashtagClientManagements")
 public class HashtagClientManagement implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -105,6 +102,5 @@ public class HashtagClientManagement implements Serializable{
 	public void setHashtagClientManagement(Hashtag hashtagClientManagement) {
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
-	
 	
 }

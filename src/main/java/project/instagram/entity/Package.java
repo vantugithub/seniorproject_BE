@@ -17,9 +17,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "packages")
 public class Package implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -152,8 +149,5 @@ public class Package implements Serializable{
 	public void setTypeOfPackage(TypeOfPackage typeOfPackage) {
 		this.typeOfPackage = typeOfPackage;
 	}
-	
-	
-	
 	
 }

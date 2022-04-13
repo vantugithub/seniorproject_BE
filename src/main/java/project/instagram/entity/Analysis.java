@@ -97,5 +97,4 @@ public class Analysis implements Serializable{
 		this.hashtag = hashtag;
 	}
 	
-	
 }

@@ -11,9 +11,6 @@ import javax.persistence.Table;
 @Table(name = "TypeOfPackage")
 public class TypeOfPackage implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -46,7 +43,5 @@ public class TypeOfPackage implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 	
 }
