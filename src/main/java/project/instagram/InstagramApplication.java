@@ -21,10 +21,6 @@ public class InstagramApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		Client client = new Client();
-//		client.setEmail("admin1@gmail.com");
-//		client.setPassword("123456");
-//		clientRepository.save(client);
 	}
 
 }

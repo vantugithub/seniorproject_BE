@@ -126,5 +126,4 @@ public class DataCrawl implements Serializable{
 		this.hashtag = hashtag;
 	}
 
-	
 }

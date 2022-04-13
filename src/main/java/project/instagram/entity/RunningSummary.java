@@ -16,9 +16,6 @@ import javax.persistence.TemporalType;
 @Table(name = "RunningSummaries")
 public class RunningSummary implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -140,7 +137,5 @@ public class RunningSummary implements Serializable{
 	public void setTransactionPackage(TransactionPackage transactionPackage) {
 		this.transactionPackage = transactionPackage;
 	}
-	
-	
 	
 }

@@ -22,9 +22,6 @@ import javax.persistence.TemporalType;
 @Table(name = "TransactionPackages")
 public class TransactionPackage implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -122,6 +119,5 @@ public class TransactionPackage implements Serializable{
 	public void setPackage1(Package package1) {
 		this.package1 = package1;
 	}
-	
 	
 }
