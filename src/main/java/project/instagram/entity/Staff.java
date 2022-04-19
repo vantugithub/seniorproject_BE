@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,7 +20,6 @@ public class Staff extends User {
 	private static final long serialVersionUID = 1L;
 	
 	@OneToOne
-	@NotNull
 	@JoinColumn(name ="createdBy")
 	private Staff updatedById;
 	
@@ -39,7 +37,7 @@ public class Staff extends User {
 		super();
 	}
 
-	public Staff(@NotNull Staff updatedById, Staff createdById, Set<Request> requests,
+	public Staff(Staff updatedById, Staff createdById, Set<Request> requests,
 			Set<BlackHashtag> blackHashtags) {
 		super();
 		this.updatedById = updatedById;
