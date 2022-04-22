@@ -35,7 +35,7 @@ class InstagramApplicationTests {
 	void contextLoads() {
 		UUID uuid = UUID.fromString("336e80e3-fb03-410b-9d4d-36d10bf965a4");
 		
-		Client client = clientRepository.getById(uuid);
+		Client client = clientRepository.findById(uuid).get();
 		Hashtag hashtag = hashtagRepository.getHashtagByName("netflix");
 //		System.out.println(hashtagClientManagementRepository.getHashtagClientManagementByClientAndHashtag(client, hashtag).toString());
 		hashtagClientManagementRepository.deleteHashtagClientManagementByClientAndHashtag(client, hashtag);
