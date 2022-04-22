@@ -60,7 +60,7 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
             	email = jwtTokenUtil.getUsernameFromToken(jwtToken);
             	UserDetails userDetails = null;
             	
-            	if (clientRepository.findByEmail(email) != null) {
+            	if (clientRepository.findByEmail(email).get() != null) {
             		userDetails = jwtInMemoryUserDetailsService.loadUserByUsername(email);
             	}
             	else {

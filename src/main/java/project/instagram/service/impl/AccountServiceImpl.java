@@ -122,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
 			messageResponse.setMessage(UserConstants.PHONE_NULL);
 		}
 		
-		else if (clientRepository.findByEmail(signUpFormRequest.getEmail()) != null) {
+		else if (clientRepository.findByEmail(signUpFormRequest.getEmail()).get() != null) {
 			messageResponse.setMessage(UserConstants.EMAIL_EXISTS);
 		}
 		
