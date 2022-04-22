@@ -80,7 +80,7 @@ public class HashtagServiceImpl implements HashtagServive {
 		Optional<Hashtag> hashTag = hashtagRepository.findById(cleanHashtagName);
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		
-		if (hashTag.get() == null) {
+		if (hashTag.isEmpty()) {
 			messageResponse = createHashtagByClient(cleanHashtagName, client);
 			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
@@ -112,7 +112,7 @@ public class HashtagServiceImpl implements HashtagServive {
 		Optional<Hashtag> hashTag = hashtagRepository.findById(hashtagName);
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		
-		if (hashTag.get() == null) {
+		if (hashTag.isEmpty()) {
 			messageResponse.setMessage(HashtagConstants.HASHTAG_NOT_EXISTS);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			

@@ -125,7 +125,7 @@ public class AccountServiceImpl implements AccountService {
 		else if (!clientRepository.findByEmail(signUpFormRequest.getEmail()).isEmpty()) {
 			messageResponse.setMessage(UserConstants.EMAIL_EXISTS);
 		}
-
+		
 		else if (roleRepository.findByName(RoleName.ROLE_CLIENT) == null) {
 			messageResponse.setMessage(UserConstants.ROLE_NOT_EXISTS);
 		}
