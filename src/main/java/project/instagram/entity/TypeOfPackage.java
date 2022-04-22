@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "TypeOfPackage")
-public class TypeOfPackage implements Serializable{
+public class TypeOfPackage implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -22,6 +22,10 @@ public class TypeOfPackage implements Serializable{
 
 	public TypeOfPackage(byte id, String name) {
 		this.id = id;
+		this.name = name;
+	}
+	
+	public TypeOfPackage(String name) {
 		this.name = name;
 	}
 

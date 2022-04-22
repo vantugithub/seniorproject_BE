@@ -13,12 +13,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "hashtags")
+@Table(name = "hashtags", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "name"
+            })
+    })
 @EntityListeners(AuditingEntityListener.class)
 public class Hashtag implements Serializable{
 	
@@ -47,13 +52,16 @@ public class Hashtag implements Serializable{
 
 	public Hashtag(String name, Date issuedDate, Set<DataCrawl> dataCrawls, Set<Analysis> analysis,
 			Set<HashtagClientManagement> hashtagClientManagements, Set<HashtagRunningHistory> hashtagRunningHistories) {
-		super();
 		this.name = name;
 		this.issuedDate = issuedDate;
 		this.dataCrawls = dataCrawls;
 		this.analysis = analysis;
 		this.hashtagClientManagements = hashtagClientManagements;
 		this.hashtagRunningHistories = hashtagRunningHistories;
+	}
+	
+	public Hashtag(String name) {
+		this.name = name;
 	}
 
 	public Hashtag() {

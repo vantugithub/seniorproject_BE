@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import project.instagram.repository.ClientRepository;
+import project.instagram.repository.StaffRepository;
 
 @Component
 public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFilter {
@@ -27,6 +29,12 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
 
     @Autowired
     private JwtInMemoryClientDetailsService jwtInMemoryUserDetailsService;
+    
+    @Autowired
+    private StaffRepository staffRepository;
+    
+    @Autowired
+    private ClientRepository clientRepository;
     
     @Autowired
     private JwtInMemoryStaffDetailsService jwtInMemoryStaffDetailsService;
@@ -50,8 +58,12 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
             if (jwtTokenUtil.validateJwtToken(jwtToken)) {
             try {
             	email = jwtTokenUtil.getUsernameFromToken(jwtToken);
-                UserDetails userDetails = jwtInMemoryUserDetailsService.loadUserByUsername(email);
-                if(userDetails == null) {
+            	UserDetails userDetails = null;
+            	
+            	if (!clientRepository.findByEmail(email).isEmpty()) {
+            		userDetails = jwtInMemoryUserDetailsService.loadUserByUsername(email);
+            	}
+            	else {
                 	userDetails = jwtInMemoryStaffDetailsService.loadUserByUsername(email);
                 }
                 UsernamePasswordAuthenticationToken authentication 

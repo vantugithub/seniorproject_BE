@@ -14,10 +14,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import project.instagram.common.enums.RoleName;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	private static final String ROLE_CLIENT = RoleName.ROLE_CLIENT.name().split("_")[1];
+	private static final String ROLE_ADMIN = RoleName.ROLE_ADMIN.name().split("_")[1];
 	
 	@Autowired
     private JwtUnAuthorizedResponseAuthenticationEntryPoint jwtUnAuthorizedResponseAuthenticationEntryPoint;
@@ -43,7 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .exceptionHandling().authenticationEntryPoint(jwtUnAuthorizedResponseAuthenticationEntryPoint).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests().antMatchers("/api/auth/**").permitAll().and()
+            .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/api/client/**").hasAnyRole(ROLE_CLIENT)
+            .antMatchers("/api/admin/**").hasAnyRole(ROLE_ADMIN)
+            .and()
             .authorizeRequests().antMatchers("/**").permitAll()
             .anyRequest().authenticated();
     	
