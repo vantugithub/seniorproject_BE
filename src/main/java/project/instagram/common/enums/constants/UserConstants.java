@@ -7,7 +7,7 @@ public class UserConstants {
 	
 	public static final String ACCOUNT_NOT_BANNED = "Account not yet banned!";
 	
-	public static final String ACCOUNT_VERIFICATION_SUCCESSFUL = "Account verification successful";
+	public static final String ACCOUNT_VERIFICATION_SUCCESSFUL = "Account verification successfully";
 	
 	public static final String ACCOUNT_VERIFICATION_FAILED = "Account verification failed";
 
@@ -65,8 +65,8 @@ public class UserConstants {
 
 	public static final String WRONG_OLD_PASSWORD = "Please enter the valid old password!";
 
-	public static final String UPDATE_SUCCESS = "Updated information successly";
+	public static final String UPDATE_SUCCESS = "Updated information successfully";
 
-	public static final String GET_INFORMATION = "Get information successly";
+	public static final String GET_INFORMATION = "Get information successfully";
 	
 }

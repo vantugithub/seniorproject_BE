@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import project.instagram.common.enums.RoleName;
@@ -164,18 +165,14 @@ public class AccountServiceImpl implements AccountService {
 		return true;
 	}
 	
-	ResponseEntity<MessageResponse> login(LoginFormRequest loginFormRequest, boolean roleClientLogin) {
+	ResponseEntity<MessageResponse> login(LoginFormRequest loginFormRequest, UserDetailsService userDetailsService) {
 		MessageResponse messageResponse = validateLoginFormRequest(loginFormRequest);
 		if (messageResponse.getMessage() != null)
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		
-		UserDetails userDetails = null;
-		if(roleClientLogin)
-			userDetails = jwtInMemoryStaffDetailsService.loadUserByUsername(loginFormRequest.getEmail());
+		 UserDetails userDetails = userDetailsService.loadUserByUsername(loginFormRequest.getEmail());
 		
-		userDetails = jwtInMemoryClientDetailsService.loadUserByUsername(loginFormRequest.getEmail());
-		
-		if (bCryptUtils.compare(loginFormRequest.getPassword(), userDetails.getPassword())) {
+		if (!bCryptUtils.compare(loginFormRequest.getPassword(), userDetails.getPassword())) {
 			messageResponse.setMessage(UserConstants.INVALID_ACCOUNT);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
@@ -247,12 +244,12 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<MessageResponse> loginForClient(LoginFormRequest loginFormRequest) {
-	    return login(loginFormRequest, true);
+	    return login(loginFormRequest, jwtInMemoryClientDetailsService);
 	}
 
 	@Override
 	public ResponseEntity<MessageResponse> loginForStaff(LoginFormRequest loginFormRequest) {
-	    return login(loginFormRequest, false);
+	    return login(loginFormRequest, jwtInMemoryStaffDetailsService);
 	}
 
 }

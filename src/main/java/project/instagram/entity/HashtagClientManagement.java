@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,23 +35,26 @@ public class HashtagClientManagement implements Serializable{
 	@Column(name = "active")
 	private boolean active;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client")
 	private Client clientManagement;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "hashtag")
 	private Hashtag hashtagClientManagement;
 
 	public HashtagClientManagement() {
 	}
 
-	public HashtagClientManagement(Long id, Date dateStartCrawl, int crawlQuantity, boolean active,
+	public HashtagClientManagement(Date dateStartCrawl, int crawlQuantity, boolean active,
 			Client clientManagement, Hashtag hashtagClientManagement) {
-		this.id = id;
-		this.dateStartCrawl = dateStartCrawl;
 		this.crawlQuantity = crawlQuantity;
 		this.active = active;
+		this.clientManagement = clientManagement;
+		this.hashtagClientManagement = hashtagClientManagement;
+	}
+	
+	public HashtagClientManagement(Client clientManagement, Hashtag hashtagClientManagement) {
 		this.clientManagement = clientManagement;
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
