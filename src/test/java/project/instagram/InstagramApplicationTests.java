@@ -49,30 +49,10 @@ class InstagramApplicationTests {
 	@Test
 	@Transactional
 	void contextLoads() {
-		UUID uuid = UUID.fromString("336e80e3-fb03-410b-9d4d-36d10bf965a4");
-		Client client = clientRepository.getById(uuid);
-		Date date = dateTimeZoneUtils.getDateTimeZoneLondon();
-		
-		Optional<TransactionPackage> transactionPackage = 
-				transactionPackageRepository.findByExpiredDateGreaterThanEqualAndClient(date, client);
-		
-		System.out.println(transactionPackage.isEmpty());
-		
-//		Hashtag hashtag = hashtagRepository.getHashtagByName("netflix");
-//		System.out.println(hashtagClientManagementRepository.getHashtagClientManagementByClientAndHashtag(client, hashtag).toString());
-//		hashtagClientManagementRepository.deleteHashtagClientManagementByClientAndHashtag(client, hashtag);
-		
-//		boolean temp = hashtagClientManagementRepository.existsByClientManagementAndHashtagClientManagement(client, hashtag);
-//		System.out.println(temp);
-//		boolean checkBlackHashtag = blackHashtagRepository.existsById("netflix");
-//		if(!checkBlackHashtag)
-//			hashtagClientManagementRepository.save(new HashtagClientManagement(client,hashtag));
 	}
 	
 	@Test
 	void test() {
-		System.out.println(dateTimeZoneUtils.getDateTimeZoneLondon());
-		
 	}
 	
 	
