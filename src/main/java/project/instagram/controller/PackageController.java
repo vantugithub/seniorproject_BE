@@ -13,7 +13,7 @@ import project.instagram.service.TypeOfPackageService;
 
 @RestController
 @RequestMapping(value = "/api/admin/")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class PackageController {
 	
 	@Autowired

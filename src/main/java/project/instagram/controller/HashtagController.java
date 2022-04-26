@@ -14,7 +14,7 @@ import project.instagram.service.HashtagServive;
 
 @RestController
 @RequestMapping(value = "/api/client/")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class HashtagController {
 	
 	@Autowired
