@@ -1,7 +1,14 @@
 package project.instagram.response;
 
-public class MessageResponse {
+import java.io.Serializable;
+
+public class MessageResponse implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Object data;
 
 	private String error;

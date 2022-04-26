@@ -2,16 +2,23 @@ package project.instagram.entity;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "packages")
@@ -20,9 +27,12 @@ public class Package implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", columnDefinition = "VARCHAR(40)")
+	@Type(type = "uuid-char")
 	@NotNull
-	@Column(name = "id")
-	private byte id;
+	private UUID id;
 	
 	@Column(name = "name", length = 50)
 	private String name;
@@ -45,17 +55,18 @@ public class Package implements Serializable{
 	@Column(name = "active")
 	private boolean active;
 	
-	@OneToMany(mappedBy = "package1", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "parentPackage", fetch = FetchType.LAZY)
 	private Set<TransactionPackage> transactionPackages;
 	
-	@ManyToOne
+	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeOfPackage")
 	private TypeOfPackage typeOfPackage;
 
 	public Package() {
 	}
 
-	public Package(@NotNull byte id, String name, byte crawlQuantity, byte searchQuantity,
+	public Package(@NotNull UUID id, String name, byte crawlQuantity, byte searchQuantity,
 			short numberOfPostInEachSearch, short numberOfPostsPerHashtag, double price, boolean active,
 			Set<TransactionPackage> transactionPackages, TypeOfPackage typeOfPackage) {
 		this.id = id;
@@ -70,11 +81,11 @@ public class Package implements Serializable{
 		this.typeOfPackage = typeOfPackage;
 	}
 
-	public byte getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

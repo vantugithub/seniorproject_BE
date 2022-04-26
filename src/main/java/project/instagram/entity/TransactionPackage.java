@@ -45,25 +45,25 @@ public class TransactionPackage implements Serializable{
 	@OneToMany(mappedBy = "transactionPackage", fetch = FetchType.LAZY)
 	private Set<RunningSummary> runningSummaries;
 	
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name = "package")
-	private Package package1;
+	private Package parentPackage;
 
 	public TransactionPackage() {
 	}
 
 	public TransactionPackage(int id, Date issuedeDate, Date expiredDate,
 			Set<HashtagRunningHistory> hashtagRunningSummaries, Client client, Set<RunningSummary> runningSummaries,
-			Package package1) {
+			Package parentPackage) {
 		this.id = id;
 		this.issuedeDate = issuedeDate;
 		this.expiredDate = expiredDate;
 		this.hashtagRunningSummaries = hashtagRunningSummaries;
 		this.client = client;
 		this.runningSummaries = runningSummaries;
-		this.package1 = package1;
+		this.parentPackage = parentPackage;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -112,12 +112,12 @@ public class TransactionPackage implements Serializable{
 		this.runningSummaries = runningSummaries;
 	}
 
-	public Package getPackage1() {
-		return package1;
+	public Package getParentPackage() {
+		return parentPackage;
 	}
 
-	public void setPackage1(Package package1) {
-		this.package1 = package1;
+	public void setParentPackage(Package package1) {
+		this.parentPackage = package1;
 	}
 	
 }

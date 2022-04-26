@@ -2,8 +2,6 @@ package project.instagram.service.impl;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +31,6 @@ import project.instagram.service.AccountService;
 import project.instagram.utils.BCryptUtils;
 
 @Service
-@Transactional
 public class AccountServiceImpl implements AccountService {
 	
 	@Value("${path.url}")

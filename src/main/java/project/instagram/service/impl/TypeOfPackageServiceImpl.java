@@ -28,8 +28,7 @@ public class TypeOfPackageServiceImpl implements TypeOfPackageService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 		
-		TypeOfPackage typeOfPackage = typeOfPackageRepository.save(
-				new TypeOfPackage((byte) (typeOfPackageRepository.count() + 1), typeOfPackageName));
+		TypeOfPackage typeOfPackage = typeOfPackageRepository.save(new TypeOfPackage(typeOfPackageName));
 		
 		if(typeOfPackage != null) {
 			messageResponse.setMessage(PackageConstants.CREATED_TYPE_OF_PACKAGE_SUCCESSFULLY);

@@ -13,24 +13,25 @@ import project.instagram.response.MessageResponse;
 import project.instagram.service.HashtagServive;
 
 @RestController
-@RequestMapping(value = "/api/client/")
+@RequestMapping(value = "/api/")
 @CrossOrigin(origins = "*")
 public class HashtagController {
 	
 	@Autowired
 	private HashtagServive hashtagServive;
 	
-	@PostMapping(value = "/hashtag/{hashtagName}")
+	@PostMapping(value = "client/hashtag/{hashtagName}")
 	public ResponseEntity<MessageResponse> createHashtagByClient(
 			@PathVariable(name = "hashtagName", required = true) String hashtagName) {
 		
 		return hashtagServive.createHashtag(hashtagName);
 	}
 	
-	@DeleteMapping(value = "/hashtag/{hashtagName}")
+	@DeleteMapping(value = "client/hashtag/{hashtagName}")
 	public ResponseEntity<MessageResponse> deleteHashtagByClient(
 			@PathVariable(name ="hashtagName", required = true) String hashtagName) {
 		
 		return hashtagServive.deleteHashtag(hashtagName);
 	}
+	
 }
