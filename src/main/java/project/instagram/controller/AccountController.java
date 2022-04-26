@@ -19,7 +19,7 @@ import project.instagram.service.AccountService;
 
 @RestController
 @RequestMapping(value = "/api/auth/")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class AccountController {
 	
 	@Autowired

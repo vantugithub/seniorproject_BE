@@ -2,8 +2,6 @@ package project.instagram.service.impl;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,6 @@ import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.HashtagServive;
 
 @Service
-@Transactional
 public class HashtagServiceImpl implements HashtagServive {
 	
 	@Autowired
