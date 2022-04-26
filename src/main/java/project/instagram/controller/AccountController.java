@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class AccountController {
 	private AccountService accountService;
 	
 	@PostMapping(value ="/register")
-	public ResponseEntity<MessageResponse> register(@Validated @ModelAttribute SignUpFormRequest signUpFormRequest) {
+	public ResponseEntity<MessageResponse> register(@Validated @RequestBody SignUpFormRequest signUpFormRequest) {
 		
 		return accountService.register(signUpFormRequest);
 	}
@@ -40,14 +41,14 @@ public class AccountController {
 	}
 	
 	@PostMapping(value = "/client/login")
-	public ResponseEntity<MessageResponse> loginForClient(@ModelAttribute LoginFormRequest loginRequest) 
+	public ResponseEntity<MessageResponse> loginForClient(@RequestBody LoginFormRequest loginRequest) 
 			throws AuthenticationException {
 		
 		return accountService.loginForClient(loginRequest);
 	}
 	
 	@PostMapping(value = "/staff/login")
-	public ResponseEntity<MessageResponse> loginForStaff(@ModelAttribute LoginFormRequest loginFormRequest) 
+	public ResponseEntity<MessageResponse> loginForStaff(@RequestBody LoginFormRequest loginFormRequest) 
 			throws AuthenticationException {
 		
 		return accountService.loginForStaff(loginFormRequest);

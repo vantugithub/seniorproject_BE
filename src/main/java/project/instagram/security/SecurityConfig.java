@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/client/**").hasAnyRole(ROLE_CLIENT)
             .antMatchers("/api/admin/**").hasAnyRole(ROLE_ADMIN)
             .and()
-            .authorizeRequests().antMatchers("/**").permitAll()
+            .authorizeRequests().antMatchers("/api/**").permitAll()
             .anyRequest().authenticated();
     	
     	httpSecurity
@@ -73,5 +73,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(AUTH_WHITELIST);
     }
-   
 }
