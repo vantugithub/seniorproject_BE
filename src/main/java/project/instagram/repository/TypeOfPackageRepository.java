@@ -12,5 +12,5 @@ import project.instagram.entity.TypeOfPackage;
 public interface TypeOfPackageRepository extends JpaRepository<TypeOfPackage, UUID> {
 	
 	public boolean existsByName(String name);
-	public Optional<TypeOfPackage> findByName(String email);
+	public Optional<TypeOfPackage> findByName(String name);
 }

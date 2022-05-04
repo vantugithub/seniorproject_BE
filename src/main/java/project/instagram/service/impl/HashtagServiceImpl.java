@@ -1,5 +1,6 @@
 package project.instagram.service.impl;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import project.instagram.repository.HashtagRepository;
 import project.instagram.response.MessageResponse;
 import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.HashtagServive;
+import project.instagram.utils.DateTimeZoneUtils;
 
 @Service
 public class HashtagServiceImpl implements HashtagServive {
@@ -36,6 +38,9 @@ public class HashtagServiceImpl implements HashtagServive {
 	
 	@Autowired
 	private ClientRepository clientRepository;
+	
+	@Autowired
+	private DateTimeZoneUtils dateTimeZoneUtils;
 	
 	MessageResponse createHashtagByClient(String hashtagName, Client client) {
 		MessageResponse messageResponse = new MessageResponse();
@@ -124,6 +129,14 @@ public class HashtagServiceImpl implements HashtagServive {
 		messageResponse = deleteHashtagByClient(client, hashTag.get());
 		
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> enableCrawlHashtag(String hashtagName) {
+		
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		
+		return null;
 	}
 	
 }

@@ -1,13 +1,18 @@
 package project.instagram.repository;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import project.instagram.entity.Client;
 import project.instagram.entity.Hashtag;
 import project.instagram.entity.HashtagClientManagement;
 
+@Repository
+@Transactional
 public interface HashtagClientManagementRepository extends JpaRepository<HashtagClientManagement, Long> {
 	
 	@Query(value = "SELECT h.id, h.active, h.crawl_quantity, h.date_start_crawl, h.client, h.hashtag "

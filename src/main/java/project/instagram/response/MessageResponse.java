@@ -2,11 +2,10 @@ package project.instagram.response;
 
 import java.io.Serializable;
 
+import org.springframework.http.HttpStatus;
+
 public class MessageResponse implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Object data;
@@ -48,6 +47,19 @@ public class MessageResponse implements Serializable {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
+	public MessageResponse(Object data, String message, HttpStatus status) {
+		this.data = data;
+		this.message = message;
+		this.status = status.value();
+	}
 	
+	public MessageResponse(String message, HttpStatus status) {
+		this.message = message;
+		this.status = status.value();
+	}
+
+	public MessageResponse() {
+	}
 	
 }

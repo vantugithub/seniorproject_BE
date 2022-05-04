@@ -25,7 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
             })
     })
 @EntityListeners(AuditingEntityListener.class)
-public class Hashtag implements Serializable{
+public class Hashtag implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

@@ -15,12 +15,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "TransactionPackages")
-public class TransactionPackage implements Serializable{
+public class TransactionPackage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +31,6 @@ public class TransactionPackage implements Serializable{
 	private int id;
 	
 	@Column(name = "issuedDate")
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date issuedeDate;
 	
 	@Column(name = "expiredDate", nullable = true)
@@ -45,22 +46,23 @@ public class TransactionPackage implements Serializable{
 	@OneToMany(mappedBy = "transactionPackage", fetch = FetchType.LAZY)
 	private Set<RunningSummary> runningSummaries;
 	
-	@ManyToOne()
+	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "package")
 	private Package parentPackage;
+
+	@Override
+	public String toString() {
+		return "TransactionPackage [id=" + id + ", issuedeDate=" + issuedeDate + ", expiredDate=" + expiredDate + "]";
+	}
 
 	public TransactionPackage() {
 	}
 
-	public TransactionPackage(int id, Date issuedeDate, Date expiredDate,
-			Set<HashtagRunningHistory> hashtagRunningSummaries, Client client, Set<RunningSummary> runningSummaries,
-			Package parentPackage) {
+	public TransactionPackage(int id, Date issuedeDate, Date expiredDate, Package parentPackage) {
 		this.id = id;
 		this.issuedeDate = issuedeDate;
 		this.expiredDate = expiredDate;
-		this.hashtagRunningSummaries = hashtagRunningSummaries;
-		this.client = client;
-		this.runningSummaries = runningSummaries;
 		this.parentPackage = parentPackage;
 	}
 	
@@ -119,5 +121,5 @@ public class TransactionPackage implements Serializable{
 	public void setParentPackage(Package package1) {
 		this.parentPackage = package1;
 	}
-	
+
 }

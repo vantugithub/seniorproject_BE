@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,11 +42,11 @@ public class RunningSummary implements Serializable{
 	@Column(name = "searchedExtraPackageQuantity")
 	private byte searchedExtraPackageQuantity;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client")
 	private Client client;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "transactionPackage")
 	private TransactionPackage transactionPackage;
 

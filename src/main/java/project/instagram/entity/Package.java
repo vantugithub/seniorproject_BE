@@ -52,6 +52,9 @@ public class Package implements Serializable{
 	@Column(name = "price")
 	private double price;
 	
+	@Column(name = "numberOfMonths", nullable = true)
+	private byte numberOfMonths;
+	
 	@Column(name = "active")
 	private boolean active;
 	
@@ -62,6 +65,36 @@ public class Package implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeOfPackage")
 	private TypeOfPackage typeOfPackage;
+	
+	
+
+	public Package(@NotNull UUID id, String name, byte crawlQuantity, byte searchQuantity,
+			short numberOfPostInEachSearch, short numberOfPostsPerHashtag, double price, byte numberOfMonths,
+			boolean active, Set<TransactionPackage> transactionPackages, TypeOfPackage typeOfPackage) {
+		this.id = id;
+		this.name = name;
+		this.crawlQuantity = crawlQuantity;
+		this.searchQuantity = searchQuantity;
+		this.numberOfPostInEachSearch = numberOfPostInEachSearch;
+		this.numberOfPostsPerHashtag = numberOfPostsPerHashtag;
+		this.price = price;
+		this.numberOfMonths = numberOfMonths;
+		this.active = active;
+		this.transactionPackages = transactionPackages;
+		this.typeOfPackage = typeOfPackage;
+	}
+
+	public byte getNumberOfMonths() {
+		return numberOfMonths;
+	}
+
+	public void setNumberOfMonth(byte numberOfMonths) {
+		this.numberOfMonths = numberOfMonths;
+	}
+
+	public Package(String name) {
+		this.name = name;
+	}
 
 	public Package() {
 	}
@@ -160,5 +193,14 @@ public class Package implements Serializable{
 	public void setTypeOfPackage(TypeOfPackage typeOfPackage) {
 		this.typeOfPackage = typeOfPackage;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Package [id=" + id + ", name=" + name + ", crawlQuantity=" + crawlQuantity + ", searchQuantity="
+				+ searchQuantity + ", numberOfPostInEachSearch=" + numberOfPostInEachSearch
+				+ ", numberOfPostsPerHashtag=" + numberOfPostsPerHashtag + ", price=" + price + ", numberOfMonth="
+				+ numberOfMonths + ", active=" + active + ", transactionPackages=" + transactionPackages
+				+ ", typeOfPackage=" + typeOfPackage + "]";
+	}
+
 }

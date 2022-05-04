@@ -60,9 +60,29 @@ public class PackageController {
 	}
 	
 	@GetMapping(value = "/client/package/upgrade/confirm") 
-	public ResponseEntity<MessageResponse> confirmUpgradePackageByClient(
-			@RequestParam(name = "packageId", required = true) String packageId) {
+	public ResponseEntity<MessageResponse> confirmUpgradePackageWhenClientIsNotAMember(
+			@RequestParam(name = "packageId", required = true) String packageId,
+			@RequestParam(name = "requestId", required = true) String requestId
+			) {
 		
-		return null;
+		return transactionPackageService.confirmUpgradePackageWhenTheClientIsAMember(packageId, requestId);
 	}
+	
+	@GetMapping(value = "/client/package/upgrade/member/confirm") 
+	public ResponseEntity<MessageResponse> confirmUpgradePackageWhenClientIsAMember(
+			@RequestParam(name = "packageId", required = true) String packageId,
+			@RequestParam(name = "token", required = true) String token
+			) {
+		
+		return transactionPackageService.confirmUpgradePackageWhenTheClientIsAMember(packageId, token);
+	}
+	
+	@PostMapping(value = "/client/extraPackage/purchase/{extraPackageId}")
+	public ResponseEntity<MessageResponse> purchaseExtraPackageFromClient(
+			@PathVariable(name = "extraPackageId", required = true) String extraPackageId
+			) {
+		
+		return transactionPackageService.purchaseExtraPackagesFromClient(extraPackageId);
+	}
+	
 }

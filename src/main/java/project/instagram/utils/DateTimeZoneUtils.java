@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class DateTimeZoneUtils {
 	
-	private Date dateTimeZoneLondon;
+	private Date dateTimeZoneGMT;
 	
-	public Date getDateTimeZoneLondon() {
+	public Date getDateTimeZoneGMT() {
 		Instant zulu = Instant.now();
 		ZonedDateTime zdt = zulu.atZone(ZoneId.of("Europe/London"));
-		dateTimeZoneLondon = Timestamp.valueOf(zdt.toLocalDateTime());
-		return dateTimeZoneLondon;
+		dateTimeZoneGMT = Timestamp.valueOf(zdt.toLocalDateTime());
+		return dateTimeZoneGMT;
 	}
 
 }

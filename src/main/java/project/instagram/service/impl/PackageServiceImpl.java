@@ -32,6 +32,7 @@ public class PackageServiceImpl implements PackageService {
 	
 	Package createPackage (PackageFormRequest packageFormRequest, TypeOfPackage typeOfPackage) {
 		Package newPackage = mapper.map(packageFormRequest, Package.class);
+		newPackage.setNumberOfMonth(packageFormRequest.getNumberOfMonths());
 		newPackage.setTypeOfPackage(typeOfPackage);
 		newPackage = packageRepository.save(newPackage);
 		
@@ -40,13 +41,14 @@ public class PackageServiceImpl implements PackageService {
 	
 	MessageResponse validateValidPackageAndTypeOfPackage(Optional<TypeOfPackage> typeOfPackage, Optional<Package> existsPackage) {
 		MessageResponse messageResponse = new MessageResponse();
-		if (typeOfPackage.isEmpty())
+		if (typeOfPackage.isEmpty()) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(PackageConstants.TYPE_OF_PACKAGE_NOT_EXISTS);
-		
-		if (!existsPackage.isEmpty())
+		}
+		if (!existsPackage.isEmpty()) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(PackageConstants.PACKAGE_EXISTS);
+		}
 
 		return messageResponse;
 	}
