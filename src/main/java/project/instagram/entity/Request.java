@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,7 +28,7 @@ public class Request implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id", length = 50)
+	@Column(name = "id", length = 200)
 	private String id;
 	
 	@Column(name = "reason")
@@ -45,19 +46,19 @@ public class Request implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedDate;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client_id", nullable = false)
 	private Client clientRequest;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "updatedBy", nullable = true)
 	private Staff staff;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeOfRequest")
 	private TypeOfRequest typeOfRequest;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "statusOfRequest")
 	private StatusOfRequest statusOfRequest;
 

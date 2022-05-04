@@ -32,5 +32,10 @@ public class PackageConstants {
 	
 	public static final String UPGRADE_PACKAGE = "Upgrade package";
 	
-	public static final String CREATED_REQUEST_FAILED = "Created request failed";
+	public static final String UPGRADE_PACKAGE_SUCCESSFULLY = "Upgrade package successfully";
+	
+	public static final String PURCHASED_THE_EXTRA_PACKAGE_SUCCESSFULLY = "Purchased the extra package Successfully";
+	
+	public static final String UPGRADE_PACKAGE_FAILED = "Upgrade package failed";
+	
 }

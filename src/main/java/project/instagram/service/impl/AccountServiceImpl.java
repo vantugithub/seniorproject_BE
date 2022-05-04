@@ -193,6 +193,7 @@ public class AccountServiceImpl implements AccountService {
 		
 		Role roleClient = roleRepository.findByName(RoleName.ROLE_CLIENT);
 		Client client = mapper.map(signUpFormRequest, Client.class);
+		System.out.println(signUpFormRequest.getPassword());
 		client.setPassword(bCryptUtils.bcryptEncoder(signUpFormRequest.getPassword()));
 		client.setRole(roleClient);
 		client = clientRepository.save(client);
