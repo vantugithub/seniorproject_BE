@@ -2,29 +2,39 @@ package project.instagram.request;
 
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.springframework.lang.Nullable;
 
 public class SignUpFormRequest {
 	
     @Size(max = 50)
+    @Nullable
     private String firstName;
     
     @Size(max = 50)
+    @Nullable
     private String lastName;
 
     @Size(max = 60)
+    @NotNull
     private String email;
     
     @Size(max = 11)
+    @Nullable
     private String phone;
     
     @Size(max = 40)
+    @NotNull
     private String password;
     
     @Size(max = 255)
+    @Nullable
     private String address;
     
     @Size(max = 512)
+    @Nullable
     private String biography;
 
 	public String getFirstName() {
