@@ -109,7 +109,7 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 	String createUrlPathConfirmPackage(UUID packageId, Client client) {
 		Optional<Package> upgradePackage = packageRepository.findById(packageId);
 		
-		StringBuilder urlPathConfirmUpgradePackage = new StringBuilder(URL+"api/client/package/upgrade/confirm?packageId=");
+		StringBuilder urlPathConfirmUpgradePackage = new StringBuilder(URL+"api/client/package/upgrade/member/confirm?packageId=");
 		urlPathConfirmUpgradePackage.append(upgradePackage.get().getId().toString());
 		urlPathConfirmUpgradePackage.append("&token=" + bCryptUtils.bcryptEncoder(upgradePackage.get().getId().toString()));
 		urlPathConfirmUpgradePackage.append("_"+bCryptUtils.bcryptEncoder(client.getEmail()));
@@ -265,7 +265,6 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 		newTransactionPackage.setClient(client);
 		newTransactionPackage.setParentPackage(existsPackage.get());
 		newTransactionPackage.setExpiredDate(calendar.getTime());
-		System.out.println(oldTransactionPackage.get().getExpiredDate().toString() + "concac");
 		newTransactionPackage.setIssuedeDate(oldTransactionPackage.get().getExpiredDate());
 		newTransactionPackage =  transactionPackageRepository.save(newTransactionPackage);
 		

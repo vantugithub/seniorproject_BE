@@ -99,25 +99,25 @@ public class AccountServiceImpl implements AccountService {
 			messageResponse.setMessage(UserConstants.PASSWORD_NULL);
 		}
 		
-		else if (signUpFormRequest.getAddress().equals("")) {
-			messageResponse.setMessage(UserConstants.ADDRESS_NULL);
-		}
-		
-		else if (signUpFormRequest.getBiography().equals("")) {
-			messageResponse.setMessage(UserConstants.BIOGRAPHY_NULL);
-		}
-		
-		else if (signUpFormRequest.getFirstName().equals("")) {
-			messageResponse.setMessage(UserConstants.FIRST_NAME_NULL);
-		}
-		
-		else if (signUpFormRequest.getLastName().equals(""))	{
-			messageResponse.setMessage(UserConstants.LAST_NAME_NULL);
-		}
-		
-		else if (signUpFormRequest.getPhone().equals("")) {
-			messageResponse.setMessage(UserConstants.PHONE_NULL);
-		}
+//		else if (signUpFormRequest.getAddress().equals("")) {
+//			messageResponse.setMessage(UserConstants.ADDRESS_NULL);
+//		}
+//		
+//		else if (signUpFormRequest.getBiography().equals("")) {
+//			messageResponse.setMessage(UserConstants.BIOGRAPHY_NULL);
+//		}
+//		
+//		else if (signUpFormRequest.getFirstName().equals("")) {
+//			messageResponse.setMessage(UserConstants.FIRST_NAME_NULL);
+//		}
+//		
+//		else if (signUpFormRequest.getLastName().equals(""))	{
+//			messageResponse.setMessage(UserConstants.LAST_NAME_NULL);
+//		}
+//		
+//		else if (signUpFormRequest.getPhone().equals("")) {
+//			messageResponse.setMessage(UserConstants.PHONE_NULL);
+//		}
 		
 		else if (!clientRepository.findByEmail(signUpFormRequest.getEmail()).isEmpty()) {
 			messageResponse.setMessage(UserConstants.EMAIL_EXISTS);
