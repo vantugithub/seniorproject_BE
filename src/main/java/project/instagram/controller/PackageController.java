@@ -65,7 +65,7 @@ public class PackageController {
 			@RequestParam(name = "requestId", required = true) String requestId
 			) {
 		
-		return transactionPackageService.confirmUpgradePackageWhenTheClientIsAMember(packageId, requestId);
+		return transactionPackageService.confirmUpgradePackageWhenTheClientIsNotAMember(packageId, requestId);
 	}
 	
 	@GetMapping(value = "/client/package/upgrade/member/confirm") 
