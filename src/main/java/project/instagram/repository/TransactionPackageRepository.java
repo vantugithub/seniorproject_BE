@@ -41,6 +41,4 @@ public interface TransactionPackageRepository extends JpaRepository<TransactionP
 			+ "ORDER BY "
 			+ "t.expired_date ASC", nativeQuery = true)
 	public Set<TransactionPackage> findAllValidTransactionPackages(Client client,Date currentDate);
-	
-	
 }
