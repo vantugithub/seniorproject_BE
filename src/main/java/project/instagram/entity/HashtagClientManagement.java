@@ -45,16 +45,17 @@ public class HashtagClientManagement implements Serializable{
 
 	public HashtagClientManagement() {
 	}
-
-	public HashtagClientManagement(Date dateStartCrawl, int crawlQuantity, boolean active,
-			Client clientManagement, Hashtag hashtagClientManagement) {
-		this.crawlQuantity = crawlQuantity;
-		this.active = active;
+	
+	public HashtagClientManagement(Client clientManagement, Hashtag hashtagClientManagement) {
 		this.clientManagement = clientManagement;
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
 	
-	public HashtagClientManagement(Client clientManagement, Hashtag hashtagClientManagement) {
+	public HashtagClientManagement(Date dateStartCrawl, int crawlQuantity, boolean active, Client clientManagement,
+			Hashtag hashtagClientManagement) {
+		this.dateStartCrawl = dateStartCrawl;
+		this.crawlQuantity = crawlQuantity;
+		this.active = active;
 		this.clientManagement = clientManagement;
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
@@ -106,5 +107,12 @@ public class HashtagClientManagement implements Serializable{
 	public void setHashtagClientManagement(Hashtag hashtagClientManagement) {
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
+
+	@Override
+	public String toString() {
+		return "HashtagClientManagement [id=" + id + ", dateStartCrawl=" + dateStartCrawl + ", crawlQuantity="
+				+ crawlQuantity + ", active=" + active + "]";
+	}
+	
 	
 }

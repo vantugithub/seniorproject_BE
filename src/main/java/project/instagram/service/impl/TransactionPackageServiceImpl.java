@@ -230,7 +230,7 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 	Calendar calculatePlusDaysForPackage(Optional<Package> existsPackage, TransactionPackage transactionPackage) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(transactionPackage.getExpiredDate());
-		calendar.add(Calendar.DATE, existsPackage.get().getNumberOfMonths()*30);
+		calendar.add(Calendar.MONTH, existsPackage.get().getNumberOfMonths());
 		
 		return calendar;
 	}

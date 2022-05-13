@@ -17,8 +17,38 @@ import project.instagram.entity.TransactionPackage;
 @Transactional
 public interface TransactionPackageRepository extends JpaRepository<TransactionPackage, Integer> {
 	
-	public Set<TransactionPackage> findAllByExpiredDateGreaterThanEqualOrExpiredDateNullAndClient(
-			Date currentDate, Client client);
+	@Query(value = "SELECT "
+			+ "t.id, "
+			+ "t.client, "
+			+ "t.expired_date, "
+			+ "t.issued_date, "
+			+ "t.package "
+			+ "FROM "
+			+ "transaction_packages t "
+			+ "WHERE "
+			+ "t.client= ?1 "
+			+ "AND (t.expired_date>= ?2 "
+			+ "OR t.expired_date is null) "
+			+ "ORDER BY "
+			+ "t.expired_date ASC", nativeQuery = true)
+	public Set<TransactionPackage> findAllByClientAndExpiredDateGreaterThanEqualOrExpiredDateNullOrderByExpiredDateAsc(
+			Client client,Date currentDate);
+	
+	@Query(value = "SELECT "
+			+ "t.id, "
+			+ "t.client, "
+			+ "t.expired_date, "
+			+ "t.issued_date, "
+			+ "t.package "
+			+ "FROM "
+			+ "transaction_packages t "
+			+ "WHERE "
+			+ "t.client= ?1 "
+			+ "AND (t.expired_date>= ?2 "
+			+ "OR t.expired_date is null) "
+			+ "ORDER BY "
+			+ "t.expired_date ASC", nativeQuery = true)
+	public Set<TransactionPackage> findAllValidTransactionPackages(Client client,Date currentDate);
 	
 	@Query(value = "SELECT t.id, t.expired_date, t.issued_date, t.package, t.client "
 			+ "FROM transaction_packages t WHERE t.package IN "

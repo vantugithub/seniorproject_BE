@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,14 @@ public class HashtagController {
 			@PathVariable(name ="hashtagName", required = true) String hashtagName) {
 		
 		return hashtagServive.deleteHashtag(hashtagName);
+	}
+	
+	@PutMapping(value = "client/hashtag/enablecrawl/{hashtagName}/{crawlDate}")
+	public ResponseEntity<MessageResponse> enableCrawlHashtag(
+			@PathVariable(name = "hashtagName", required = true) String hashtagName,
+			@PathVariable(name = "crawlDate", required = true) String crawlDateStr) {
+
+		return hashtagServive.enableCrawlHashtagByClient(hashtagName, crawlDateStr);
 	}
 	
 }

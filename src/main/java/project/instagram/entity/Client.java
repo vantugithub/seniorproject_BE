@@ -108,5 +108,11 @@ public class Client extends User implements Serializable {
 		this.transactionPackages = transactionPackages;
 		this.runningSummaries = runningSummaries;
 	}
+
+	@Override
+	public String toString() {
+		return "Client [biography=" + super.getCreatedDate() + "]";
+	}
 	
+
 }
