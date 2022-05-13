@@ -38,4 +38,8 @@ public class PackageConstants {
 	
 	public static final String UPGRADE_PACKAGE_FAILED = "Upgrade package failed";
 	
+	public static final String PACKAGE_TYPE = "Package";
+	
+	public static final String EXTRA_PACKAGE_TYPE = "Extra package";
+	
 }

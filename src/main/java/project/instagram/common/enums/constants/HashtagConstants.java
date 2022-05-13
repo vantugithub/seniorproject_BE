@@ -15,4 +15,8 @@ public class HashtagConstants {
 	public static final String DELETED_HASHTAG_SUCCESSFULLY = "Deleted hashtag successfully";
 	
 	public static final String DELETED_HASHTAG_FAILED = "Deleted hashtag failed";
+	
+	public static final String ENABLED_CRAWL_HASHTAG_FAILED = "Enabled crawl hashtag failed";
+	
+	public static final String ENABLED_CRAWL_HASHTAG_SUCCESSFULLY ="Enabled cralw hashtag successfully";
 }

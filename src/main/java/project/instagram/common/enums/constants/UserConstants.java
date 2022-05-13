@@ -67,6 +67,10 @@ public class UserConstants {
 
 	public static final String UPDATE_SUCCESS = "Updated information successfully";
 
-	public static final String GET_INFORMATION = "Get information successfully";
+	public static final String GET_INFORMATION_SUCCESSFULLY = "Get information successfully";
+	
+	public static final String GET_INFORMATION_FAILED = "Get information failed";
+	
+	public static final String UPDATE_FAIL = "Updated information fail";
 	
 }

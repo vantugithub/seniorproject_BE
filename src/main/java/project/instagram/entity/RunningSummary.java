@@ -2,16 +2,23 @@ package project.instagram.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import project.instagram.common.enums.constants.PackageConstants;
 
 @Entity
 @Table(name = "RunningSummaries")
@@ -20,7 +27,11 @@ public class RunningSummary implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", columnDefinition = "VARCHAR(40)")
+	@Type(type = "uuid-char")
+	private UUID id;
 	
 	@Column(name = "issuedDate")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -49,13 +60,30 @@ public class RunningSummary implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "transactionPackage")
 	private TransactionPackage transactionPackage;
+	
+	public void increaseQuantityCrawl(TypeOfPackage typeOfPackage, int crawledPackageQuantity) {
+		if ( PackageConstants.PACKAGE_TYPE.equals(typeOfPackage.getName()) ) {
+			this.crawledPackageQuantity += (byte) crawledPackageQuantity;
+		} else {
+			this.crawledExtraPackageQuantity += (byte) crawledPackageQuantity;
+		}
+	}
 
 	public RunningSummary() {
 	}
 
-	public RunningSummary(String id, Date issuedDate, Date expiredDate, byte crawledPackageQuantity,
+	@Override
+	public String toString() {
+		return "RunningSummary [id=" + id + ", issuedDate=" + issuedDate + ", expiredDate=" + expiredDate
+				+ ", crawledPackageQuantity=" + crawledPackageQuantity + ", searchedPackageQuantity="
+				+ searchedPackageQuantity + ", crawledExtraPackageQuantity=" + crawledExtraPackageQuantity
+				+ ", searchedExtraPackageQuantity=" + searchedExtraPackageQuantity + "]";
+	}
+
+	public RunningSummary(UUID id, Date issuedDate, Date expiredDate, byte crawledPackageQuantity,
 			byte searchedPackageQuantity, byte crawledExtraPackageQuantity, byte searchedExtraPackageQuantity,
 			Client client, TransactionPackage transactionPackage) {
+		super();
 		this.id = id;
 		this.issuedDate = issuedDate;
 		this.expiredDate = expiredDate;
@@ -67,11 +95,11 @@ public class RunningSummary implements Serializable{
 		this.transactionPackage = transactionPackage;
 	}
 
-	public String getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
