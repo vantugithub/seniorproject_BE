@@ -1,5 +1,6 @@
 package project.instagram.security;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/client/**").hasAnyRole(ROLE_CLIENT)
             .antMatchers("/api/admin/**").hasAnyRole(ROLE_ADMIN)
             .and()
-            .authorizeRequests().antMatchers("/**").permitAll()
+            .authorizeRequests().antMatchers("/api/**").permitAll()
             .anyRequest().authenticated();
     	
     	httpSecurity
