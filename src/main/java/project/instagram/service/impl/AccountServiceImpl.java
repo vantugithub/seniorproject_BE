@@ -1,6 +1,5 @@
 package project.instagram.service.impl;
 
-import java.lang.StackWalker.Option;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -293,7 +292,7 @@ public class AccountServiceImpl implements AccountService {
 		Optional<Client> client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get());
 
 		if (!client.isEmpty()) {
-			isUpdateAccount(updateAccountRequest, client.get());
+			updateAccount(updateAccountRequest, client.get());
 			messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
 			messageResponse.setStatus(HttpStatus.OK.value());
 
@@ -304,7 +303,7 @@ public class AccountServiceImpl implements AccountService {
 				.findByEmailAndActiveTrue(securityAuditorAware.getCurrentAuditor().get());
 
 		if (!staff.isEmpty()) {
-			isUpdateAccount(updateAccountRequest, staff.get());
+			updateAccount(updateAccountRequest, staff.get());
 			messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
 			messageResponse.setStatus(HttpStatus.OK.value());
 
@@ -317,7 +316,7 @@ public class AccountServiceImpl implements AccountService {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 	}
 
-	private void isUpdateAccount(UpdateAccountRequest updateAccountRequest, Client client) {
+	private void updateAccount(UpdateAccountRequest updateAccountRequest, Client client) {
 
 		client.setAddress(updateAccountRequest.getAddress());
 		client.setBiography(updateAccountRequest.getBiography());
@@ -328,7 +327,7 @@ public class AccountServiceImpl implements AccountService {
 		client = clientRepository.save(client);
 	}
 
-	private void isUpdateAccount(UpdateAccountRequest updateAccountRequest, Staff staff) {
+	private void updateAccount(UpdateAccountRequest updateAccountRequest, Staff staff) {
 
 		staff.setAddress(updateAccountRequest.getAddress());
 		staff.setFirstName(updateAccountRequest.getFirstName());

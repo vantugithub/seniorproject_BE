@@ -11,6 +11,22 @@ public class UserResponse implements Serializable {
     private String phone;
     private String address;
     private String biography;
+    private boolean active;
+    private String createdDate;
+	
+	public UserResponse(String id, String firstName, String lastName, String email, String phone, String address,
+			String biography, boolean active, String createdDate) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phone = phone;
+		this.address = address;
+		this.biography = biography;
+		this.active = active;
+		this.createdDate = createdDate;
+	}
 	public String getId() {
 		return id;
 	}
@@ -52,6 +68,18 @@ public class UserResponse implements Serializable {
 	}
 	public void setBiography(String biography) {
 		this.biography = biography;
+	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	public String getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
     
     
