@@ -13,5 +13,5 @@ import project.instagram.entity.Staff;
 public interface StaffRepository extends JpaRepository<Staff,UUID>{
 	
 	Optional<Staff> findByEmailAndActiveTrueAndRoleNot(String email, Role role);
-	Staff findByEmailAndActiveTrue(String email);
+	Optional<Staff> findByEmailAndActiveTrue(String email);
 }

@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 
 
 @Entity
-@Table(name = "HashtagRunningSummaries")
+@Table(name = "HashtagRunningHistories")
 public class HashtagRunningHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

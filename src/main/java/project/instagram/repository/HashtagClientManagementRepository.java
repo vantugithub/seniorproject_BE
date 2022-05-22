@@ -1,5 +1,8 @@
 package project.instagram.repository;
 
+import java.util.Date;
+import java.util.Set;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +26,5 @@ public interface HashtagClientManagementRepository extends JpaRepository<Hashtag
 	@Query(value = "DELETE FROM hashtag_client_managements WHERE client = ?1 AND hashtag = ?2", nativeQuery = true)
 	public void deleteHashtagClientManagementByClientAndHashtag(Client client, Hashtag hashtag);
 
+	public Set<HashtagClientManagement> findAllByDateStartCrawl(Date dateStartCrawl);
 }

@@ -1,5 +1,7 @@
 package project.instagram;
 
+import static org.mockito.ArgumentMatchers.anyList;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -131,12 +134,21 @@ class InstagramApplicationTests {
 	
 	@Test
 	void test7( ) {
-		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
-		UUID uuid = UUID.fromString("09ee87aa-9542-4e92-aa41-0e73205a34e8");
-		TransactionPackage transactionPackage = transactionPackageRepository.
-				findByExpiredDateGreaterThanEqualAndClientAndChildPackage(PACKAGE_TYPE, uuid.toString(), currentDate).get();
+		Date currentDate = dateTimeZoneUtils.getDateZoneGMT();
+		System.out.println(currentDate);
+		Set<HashtagClientManagement> hashtagClientManagements = hashtagClientManagementRepository.findAllByDateStartCrawl(currentDate);
 		
-		System.out.println(transactionPackage.getParentPackage().getId().toString());
+		if ( hashtagClientManagements.size() == 0 ) {
+			System.out.println("none");
+		} else {
+			System.out.println(hashtagClientManagements.size());
+		}
+	}
+	
+	@Test
+	void test8() {
+		HashtagClientManagement hashtagClientManagement = hashtagClientManagementRepository.findById(17L).get();
+		System.out.println(hashtagClientManagement.getDateStartCrawl().toString());
 	}
 
 }

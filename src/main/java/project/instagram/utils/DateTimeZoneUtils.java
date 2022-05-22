@@ -25,6 +25,22 @@ public class DateTimeZoneUtils {
 		return dateTimeZoneGMT;
 	}
 	
+	public Date getDateZoneGMT() {
+		Instant zulu = Instant.now();
+		ZonedDateTime zdt = zulu.atZone(ZoneId.of("Europe/London"));
+		dateTimeZoneGMT = Timestamp.valueOf(zdt.toLocalDateTime());
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateFormat = null;
+		try {
+			dateFormat = df.parse(dateTimeZoneGMT.toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return dateFormat;
+	}
+	
 	public Date getLocalDateTime() {
 		Date in = new Date();
 		LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
@@ -34,7 +50,7 @@ public class DateTimeZoneUtils {
 	}
 	
 	public Date formatDateTime(String dateStr) {
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateFormat = null;
 		try {
 			dateFormat = df.parse(dateStr);

@@ -42,20 +42,15 @@ public class HashtagClientManagement implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "hashtag")
 	private Hashtag hashtagClientManagement;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "transactionPackage")
+	private TransactionPackage transactionPackage;
+	
 	public HashtagClientManagement() {
 	}
 	
 	public HashtagClientManagement(Client clientManagement, Hashtag hashtagClientManagement) {
-		this.clientManagement = clientManagement;
-		this.hashtagClientManagement = hashtagClientManagement;
-	}
-	
-	public HashtagClientManagement(Date dateStartCrawl, int crawlQuantity, boolean active, Client clientManagement,
-			Hashtag hashtagClientManagement) {
-		this.dateStartCrawl = dateStartCrawl;
-		this.crawlQuantity = crawlQuantity;
-		this.active = active;
 		this.clientManagement = clientManagement;
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
@@ -108,11 +103,16 @@ public class HashtagClientManagement implements Serializable{
 		this.hashtagClientManagement = hashtagClientManagement;
 	}
 
-	@Override
-	public String toString() {
-		return "HashtagClientManagement [id=" + id + ", dateStartCrawl=" + dateStartCrawl + ", crawlQuantity="
-				+ crawlQuantity + ", active=" + active + "]";
+	public TransactionPackage getTransactionPackage() {
+		return transactionPackage;
 	}
-	
+
+	public void setTransactionPackage(TransactionPackage transactionPackage) {
+		this.transactionPackage = transactionPackage;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 }
