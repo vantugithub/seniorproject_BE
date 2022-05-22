@@ -61,13 +61,13 @@ public class HashtagServiceImpl implements HashtagServive {
 
 	@Autowired
 	private TransactionPackageRepository transactionPackageRepository;
-	
+
 	@Autowired
 	private TypeOfPackageRepository typeOfPackageRepository;
 
 	@Autowired
 	private RunningSummaryRepository runningSummaryRepository;
-	
+
 	private MessageResponse createHashtagByClient(String hashtagName, Client client) {
 		MessageResponse messageResponse = new MessageResponse();
 		Hashtag createHashtagByClient = hashtagRepository.save(new Hashtag(hashtagName));
@@ -126,7 +126,8 @@ public class HashtagServiceImpl implements HashtagServive {
 		return resultSet;
 	}
 
-	RunningSummary createNewRunningSummary(Client client, TransactionPackage transactionPackage, DateRange dateRange, Optional<TypeOfPackage> typeOfPackage) {
+	RunningSummary createNewRunningSummary(Client client, TransactionPackage transactionPackage, DateRange dateRange,
+			Optional<TypeOfPackage> typeOfPackage) {
 
 		RunningSummary runningSummary = new RunningSummary();
 		runningSummary.setClient(client);
@@ -172,14 +173,14 @@ public class HashtagServiceImpl implements HashtagServive {
 	}
 
 	Boolean enableCrawlHashtagByClient(Hashtag hashtag, Date crawlDate) {
-		
+
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getLocalDateTime();
 
 		Set<TransactionPackage> setValidTransactionPackage = transactionPackageRepository
 				.findAllValidTransactionPackages(client, crawlDate);
 
-		if ( setValidTransactionPackage.size() == 0 ) {
+		if (setValidTransactionPackage.size() == 0) {
 			return false;
 		}
 
@@ -188,34 +189,37 @@ public class HashtagServiceImpl implements HashtagServive {
 			Package packageFromTransactionPackage = transactionPackage.getParentPackage();
 			Optional<TypeOfPackage> typeOfPackage = findTypeOfPackage(packageFromTransactionPackage);
 
-			Optional<RunningSummary> validRunningSummary = runningSummaryRepository.
-					findRunningSummaryByExpiredDateGreaterThanEqualAndTransactionPackage(currentDate, transactionPackage);
-			
-			if ( validRunningSummary.isEmpty() ) {
+			Optional<RunningSummary> validRunningSummary = runningSummaryRepository
+					.findRunningSummaryByExpiredDateGreaterThanEqualAndTransactionPackage(currentDate,
+							transactionPackage);
+
+			if (validRunningSummary.isEmpty()) {
 				Date issuedDateTransactionPackage = transactionPackage.getIssuedeDate();
 				Date pointOfTime = createPointOfTime(issuedDateTransactionPackage, currentDate);
 
 				DateRange dateRange = new DateRange();
 				dateRange.correspondingDateRange(currentDate, pointOfTime);
 
-				if ( isDateInRange(crawlDate, dateRange) ) {
-					RunningSummary runningSummary = createNewRunningSummary(client, transactionPackage, dateRange, typeOfPackage);
+				if (isDateInRange(crawlDate, dateRange)) {
+					RunningSummary runningSummary = createNewRunningSummary(client, transactionPackage, dateRange,
+							typeOfPackage);
 					runningSummaryRepository.save(runningSummary);
-					enableCrawlHashtag(hashtag, client, crawlDate, packageFromTransactionPackage.getNumberOfPostsPerHashtag());
-					
+					enableCrawlHashtag(hashtag, client, crawlDate,
+							packageFromTransactionPackage.getNumberOfPostsPerHashtag(), transactionPackage);
+
 					return true;
 				}
 
 				continue;
 			}
-			
-			if (!isDateInRange(crawlDate,
-					new DateRange(validRunningSummary.get().getIssuedDate(), validRunningSummary.get().getExpiredDate()))) {
+
+			if (!isDateInRange(crawlDate, new DateRange(validRunningSummary.get().getIssuedDate(),
+					validRunningSummary.get().getExpiredDate()))) {
 				continue;
 			}
 
-			if (!isDateInRange(currentDate,
-					new DateRange(validRunningSummary.get().getIssuedDate(), validRunningSummary.get().getExpiredDate()))) {
+			if (!isDateInRange(currentDate, new DateRange(validRunningSummary.get().getIssuedDate(),
+					validRunningSummary.get().getExpiredDate()))) {
 				continue;
 			}
 
@@ -228,8 +232,8 @@ public class HashtagServiceImpl implements HashtagServive {
 
 			validRunningSummary.get().increaseQuantityCrawl(typeOfPackage.get(), 1);
 			runningSummaryRepository.save(validRunningSummary.get());
-			enableCrawlHashtag(hashtag, client, crawlDate, packageFromTransactionPackage.getNumberOfPostsPerHashtag());
-			
+			enableCrawlHashtag(hashtag, client, crawlDate, packageFromTransactionPackage.getNumberOfPostsPerHashtag(), transactionPackage);
+
 			return true;
 		}
 
@@ -245,18 +249,22 @@ public class HashtagServiceImpl implements HashtagServive {
 
 		return (byte) (quantityCrawlOfPackage - runningSummary.getCrawledExtraPackageQuantity());
 	}
-	
-	private void enableCrawlHashtag(Hashtag hashtag,Client client, Date dateCrawl, short crawlQuantity) {
-		
+
+	@SuppressWarnings("deprecation")
+	private void enableCrawlHashtag(Hashtag hashtag, Client client, Date dateCrawl, short crawlQuantity,
+			TransactionPackage transactionPackage) {
+
 		HashtagClientManagement hashtagClientManagement = new HashtagClientManagement();
 		hashtagClientManagement.setActive(true);
 		hashtagClientManagement.setClientManagement(client);
 		hashtagClientManagement.setHashtagClientManagement(hashtag);
 		hashtagClientManagement.setCrawlQuantity(crawlQuantity);
+		dateCrawl.setHours(-24);
 		hashtagClientManagement.setDateStartCrawl(dateCrawl);
+		hashtagClientManagement.setTransactionPackage(transactionPackage);
 		
 		hashtagClientManagementRepository.save(hashtagClientManagement);
-		
+
 	}
 
 	@Override
@@ -318,20 +326,20 @@ public class HashtagServiceImpl implements HashtagServive {
 
 	@Override
 	public ResponseEntity<MessageResponse> enableCrawlHashtagByClient(String hashtagName, String dateCrawlStr) {
-		
+
 		MessageResponse messageResponse = new MessageResponse();
 		Optional<Hashtag> existsHashtag = hashtagRepository.findById(hashtagName);
-		
+
 		Date dateCrawl = dateTimeZoneUtils.formatDateTime(dateCrawlStr);
-		
-		if ( existsHashtag.isEmpty() ) {
+
+		if (existsHashtag.isEmpty()) {
 			messageResponse.setMessage(HashtagConstants.HASHTAG_NOT_EXISTS);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
-		
-		if ( !enableCrawlHashtagByClient(existsHashtag.get(), dateCrawl) ) {
+
+		if (!enableCrawlHashtagByClient(existsHashtag.get(), dateCrawl)) {
 			messageResponse.setMessage(HashtagConstants.ENABLED_CRAWL_HASHTAG_FAILED);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -339,7 +347,7 @@ public class HashtagServiceImpl implements HashtagServive {
 		}
 		messageResponse.setMessage(HashtagConstants.ENABLED_CRAWL_HASHTAG_SUCCESSFULLY);
 		messageResponse.setStatus(HttpStatus.OK.value());
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 

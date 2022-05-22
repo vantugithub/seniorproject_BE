@@ -2,7 +2,6 @@ package project.instagram.service.impl;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

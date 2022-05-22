@@ -48,6 +48,9 @@ public class TransactionPackage implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "package")
 	private Package parentPackage;
+	
+	@OneToMany(mappedBy = "transactionPackage", fetch = FetchType.LAZY)
+	private Set<HashtagClientManagement> hashtagClientManagements;
 
 	@Override
 	public String toString() {
@@ -120,4 +123,13 @@ public class TransactionPackage implements Serializable {
 		this.parentPackage = package1;
 	}
 
+	public Set<HashtagClientManagement> getHashtagClientManagements() {
+		return hashtagClientManagements;
+	}
+
+	public void setHashtagClientManagements(Set<HashtagClientManagement> hashtagClientManagements) {
+		this.hashtagClientManagements = hashtagClientManagements;
+	}
+
+	
 }

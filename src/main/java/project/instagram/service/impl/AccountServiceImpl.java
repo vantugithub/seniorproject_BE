@@ -1,5 +1,7 @@
 package project.instagram.service.impl;
 
+import java.lang.StackWalker.Option;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -19,8 +21,10 @@ import project.instagram.common.enums.constants.UserConstants;
 import project.instagram.common.enums.constants.Validation;
 import project.instagram.entity.Client;
 import project.instagram.entity.Role;
+import project.instagram.entity.Staff;
 import project.instagram.repository.ClientRepository;
 import project.instagram.repository.RoleRepository;
+import project.instagram.repository.StaffRepository;
 import project.instagram.request.LoginFormRequest;
 import project.instagram.request.SignUpFormRequest;
 import project.instagram.request.UpdateAccountRequest;
@@ -65,6 +69,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
+
+	@Autowired
+	private StaffRepository staffRepository;
 
 	MessageResponse validateLoginFormRequest(LoginFormRequest loginFormRequest) {
 		MessageResponse messageResponse = new MessageResponse();
@@ -174,6 +181,13 @@ public class AccountServiceImpl implements AccountService {
 		return userResponse;
 	}
 
+	UserResponse createUserResponse(Staff staff) {
+		UserResponse userResponse = mapper.map(staff, UserResponse.class);
+		userResponse.setId(staff.getId().toString());
+
+		return userResponse;
+	}
+
 	@Override
 	public ResponseEntity<MessageResponse> register(SignUpFormRequest signUpFormRequest) {
 
@@ -244,48 +258,66 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<MessageResponse> getAccount() {
 		MessageResponse messageResponse = new MessageResponse();
-		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		Optional<Client> client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get());
 
-		if (client == null) {
-			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		if (!client.isEmpty()) {
+			messageResponse.setMessage(UserConstants.GET_INFORMATION_SUCCESSFULLY);
+			messageResponse.setStatus(HttpStatus.OK.value());
+			UserResponse userResponse = createUserResponse(client.get());
+			messageResponse.setData(userResponse);
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
-		messageResponse.setMessage(UserConstants.GET_INFORMATION_SUCCESSFULLY);
-		messageResponse.setStatus(HttpStatus.OK.value());
-		UserResponse userResponse = createUserResponse(client);
-		messageResponse.setData(userResponse);
+		Optional<Staff> staff = staffRepository
+				.findByEmailAndActiveTrue(securityAuditorAware.getCurrentAuditor().get());
 
-		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+		if (!staff.isEmpty()) {
+			messageResponse.setMessage(UserConstants.GET_INFORMATION_SUCCESSFULLY);
+			messageResponse.setStatus(HttpStatus.OK.value());
+			UserResponse userResponse = createUserResponse(staff.get());
+			messageResponse.setData(userResponse);
+
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+		}
+
+		messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+		messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+
 	}
 
 	@Override
 	public ResponseEntity<MessageResponse> updateAccount(UpdateAccountRequest updateAccountRequest) {
 		MessageResponse messageResponse = new MessageResponse();
-		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		Optional<Client> client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get());
 
-		if (client == null) {
-			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		if (!client.isEmpty()) {
+			isUpdateAccount(updateAccountRequest, client.get());
+			messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
+			messageResponse.setStatus(HttpStatus.OK.value());
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
 
-		if (!isUpdateAccount(updateAccountRequest, client)) {
-			messageResponse.setMessage(UserConstants.UPDATE_FAIL);
-			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		Optional<Staff> staff = staffRepository
+				.findByEmailAndActiveTrue(securityAuditorAware.getCurrentAuditor().get());
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		if (!staff.isEmpty()) {
+			isUpdateAccount(updateAccountRequest, staff.get());
+			messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
+			messageResponse.setStatus(HttpStatus.OK.value());
+
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+
 		}
+		messageResponse.setMessage(UserConstants.UPDATE_FAIL);
+		messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
-		messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
-		messageResponse.setStatus(HttpStatus.OK.value());
-
-		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 	}
 
-	private boolean isUpdateAccount(UpdateAccountRequest updateAccountRequest, Client client) {
+	private void isUpdateAccount(UpdateAccountRequest updateAccountRequest, Client client) {
 
 		client.setAddress(updateAccountRequest.getAddress());
 		client.setBiography(updateAccountRequest.getBiography());
@@ -294,11 +326,17 @@ public class AccountServiceImpl implements AccountService {
 		client.setPhone(updateAccountRequest.getPhone());
 
 		client = clientRepository.save(client);
-		if (client == null) {
-			return false;
-		}
+	}
 
-		return true;
+	private void isUpdateAccount(UpdateAccountRequest updateAccountRequest, Staff staff) {
+
+		staff.setAddress(updateAccountRequest.getAddress());
+		staff.setFirstName(updateAccountRequest.getFirstName());
+		staff.setLastName(updateAccountRequest.getLastName());
+		staff.setPhone(updateAccountRequest.getPhone());
+
+		staff = staffRepository.save(staff);
+
 	}
 
 }
