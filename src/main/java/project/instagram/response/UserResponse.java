@@ -81,6 +81,6 @@ public class UserResponse implements Serializable {
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
-    
-    
+	public UserResponse() {
+	}
 }
