@@ -3,6 +3,8 @@ package project.instagram.repository;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +16,6 @@ public interface StaffRepository extends JpaRepository<Staff,UUID>{
 	
 	Optional<Staff> findByEmailAndActiveTrueAndRoleNot(String email, Role role);
 	Optional<Staff> findByEmailAndActiveTrue(String email);
+	Page<Staff> findAllByRole(Role role, Pageable pageable);
+	Optional<Staff> findByEmail(String email);
 }
