@@ -20,11 +20,11 @@ public class Staff extends User {
 	private static final long serialVersionUID = 1L;
 	
 	@OneToOne
-	@JoinColumn(name ="createdBy")
+	@JoinColumn(name ="updatedBy")
 	private Staff updatedById;
 	
 	@OneToOne
-	@JoinColumn(name = "updatedBy")
+	@JoinColumn(name = "createdBy")
 	private Staff createdById;
 	
 	@OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)

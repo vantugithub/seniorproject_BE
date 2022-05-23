@@ -73,4 +73,8 @@ public class UserConstants {
 	
 	public static final String UPDATE_FAIL = "Updated information fail";
 	
+	public static final String CREATE_STAFF_FAILED = "Created staff failed";
+	
+	public static final String CREATE_STAFF_SUCCESSFULLY = "Created staff successfully";
+	
 }
