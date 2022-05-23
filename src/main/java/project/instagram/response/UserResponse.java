@@ -2,8 +2,11 @@ package project.instagram.response;
 
 import java.io.Serializable;
 
-@SuppressWarnings("serial")
 public class UserResponse implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String firstName;
 	private String lastName;
@@ -13,10 +16,23 @@ public class UserResponse implements Serializable {
 	private String biography;
 	private boolean active;
 	private String createdDate;
+	private String roleName;
+
+	public UserResponse(String id, String firstName, String lastName, String email, String phone, String address,
+			boolean active, String createdDate, String roleName) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phone = phone;
+		this.address = address;
+		this.active = active;
+		this.createdDate = createdDate;
+		this.roleName = roleName;
+	}
 
 	public UserResponse(String id, String firstName, String lastName, String email, String phone, String address,
 			String biography, boolean active, String createdDate) {
-		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -30,7 +46,6 @@ public class UserResponse implements Serializable {
 
 	public UserResponse(String id, String firstName, String lastName, String email, String phone, String address,
 			boolean active, String createdDate) {
-		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -114,5 +129,13 @@ public class UserResponse implements Serializable {
 	}
 
 	public UserResponse() {
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 }
