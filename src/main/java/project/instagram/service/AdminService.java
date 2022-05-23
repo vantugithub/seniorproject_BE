@@ -16,4 +16,5 @@ public interface AdminService {
 	ResponseEntity<MessageResponse> findAllRoles();
 	ResponseEntity<MessageResponse> lockingStaff(String staffId);
 	ResponseEntity<MessageResponse> updateStaff(UpdateStaffRequest updateStaffRequest);
+	ResponseEntity<MessageResponse> getStaff(String staffID);
 }

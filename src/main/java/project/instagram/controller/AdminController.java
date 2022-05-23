@@ -60,7 +60,7 @@ public class AdminController {
 
 	@GetMapping(path = "/roles")
 	public ResponseEntity<MessageResponse> findAllRoles() {
-
+		
 		return adminService.findAllRoles();
 	}
 
@@ -76,5 +76,12 @@ public class AdminController {
 			@RequestBody UpdateStaffRequest updateStaffRequest) {
 
 		return adminService.updateStaff(updateStaffRequest);
+	}
+	
+	@GetMapping(path = "/staff/{staffId}")
+	public ResponseEntity<MessageResponse> getStaff(
+			@PathVariable(name = "staffId", required = true) String staffId) {
+
+		return adminService.getStaff(staffId);
 	}
 }

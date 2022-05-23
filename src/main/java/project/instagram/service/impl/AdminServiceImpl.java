@@ -72,6 +72,14 @@ public class AdminServiceImpl implements AdminService {
 				staff.getCreatedDate() == null ? "" : staff.getCreatedDate().toString());
 	}
 
+	private UserResponse createStaffResponse(Staff staff) {
+
+		return new UserResponse(staff.getId().toString(), staff.getFirstName(), staff.getLastName(), staff.getEmail(),
+				staff.getPhone(), staff.getAddress(), staff.isActive(),
+				staff.getCreatedDate() == null ? "" : staff.getCreatedDate().toString(),
+				staff.getRole().getName().toString());
+	}
+
 	private boolean isEmailExists(String email) {
 		Optional<Staff> staff = staffRepository.findByEmail(email);
 		if (!staff.isEmpty()) {
@@ -160,7 +168,7 @@ public class AdminServiceImpl implements AdminService {
 
 		List<UserResponse> userResponses = new ArrayList<UserResponse>(staffs.getContent().size());
 
-		for ( Staff staff : staffs.getContent() ) {
+		for (Staff staff : staffs.getContent()) {
 			userResponses.add(createUserResponse(staff));
 		}
 
@@ -188,7 +196,7 @@ public class AdminServiceImpl implements AdminService {
 	public ResponseEntity<MessageResponse> createStaff(CreateStaffRequest createStaffRequest) {
 		MessageResponse messageResponse = new MessageResponse();
 
-		if ( !contains(createStaffRequest.getRoleName()) ) {
+		if (!contains(createStaffRequest.getRoleName())) {
 			messageResponse.setMessage(UserConstants.ROLE_NOT_EXISTS);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -197,14 +205,14 @@ public class AdminServiceImpl implements AdminService {
 
 		Role role = roleRepository.findByName(RoleName.valueOf(createStaffRequest.getRoleName()));
 
-		if ( role == null ) {
+		if (role == null) {
 			messageResponse.setMessage(UserConstants.ROLE_NOT_EXISTS);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 
-		if ( isEmailExists(createStaffRequest.getEmail()) ) {
+		if (isEmailExists(createStaffRequest.getEmail())) {
 			messageResponse.setMessage(UserConstants.EMAIL_EXISTS);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -213,7 +221,7 @@ public class AdminServiceImpl implements AdminService {
 
 		Staff createStaff = createStaff(createStaffRequest, role);
 
-		if ( createStaff == null ) {
+		if (createStaff == null) {
 			messageResponse.setMessage(UserConstants.CREATE_STAFF_FAILED);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -240,7 +248,7 @@ public class AdminServiceImpl implements AdminService {
 	public ResponseEntity<MessageResponse> lockingStaff(String staffId) {
 		MessageResponse messageResponse = new MessageResponse();
 		UUID StaffUUID = UUID.fromString(staffId);
-		if ( !isStaffExists(StaffUUID) ) {
+		if (!isStaffExists(StaffUUID)) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 
@@ -256,13 +264,33 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public ResponseEntity<MessageResponse> updateStaff(UpdateStaffRequest updateStaffRequest) {
 		MessageResponse messageResponse = new MessageResponse();
-		if ( !isStaffExists(updateStaffRequest.getEmail()) ) {
+		if (!isStaffExists(updateStaffRequest.getEmail())) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 		updateInforStaff(updateStaffRequest);
+		messageResponse.setStatus(HttpStatus.OK.value());
+		messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> getStaff(String staffID) {
+		MessageResponse messageResponse = new MessageResponse();
+		UUID StaffUUID = UUID.fromString(staffID);
+		if (!isStaffExists(StaffUUID)) {
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+		Staff staff = staffRepository.getById(StaffUUID);
+		UserResponse userResponse = createStaffResponse(staff);
+
+		messageResponse.setData(userResponse);
 		messageResponse.setStatus(HttpStatus.OK.value());
 		messageResponse.setMessage(UserConstants.UPDATE_SUCCESS);
 
