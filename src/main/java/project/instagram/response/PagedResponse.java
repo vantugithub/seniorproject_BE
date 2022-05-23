@@ -10,19 +10,26 @@ public class PagedResponse<T> {
 	private int size;
 	private long totalElements;
 	private int totalPages;
-	private boolean last;
-	
+	private boolean isLastPage;
 
 	public PagedResponse() {
 	}
 
-	public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
+	public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean isLastPage) {
 		setContent(content);
 		this.page = page;
 		this.size = size;
 		this.totalElements = totalElements;
 		this.totalPages = totalPages;
-		this.last = last;
+		this.isLastPage = isLastPage;
+	}
+
+	public boolean isLastPage() {
+		return isLastPage;
+	}
+
+	public void setLastPage(boolean isLastPage) {
+		this.isLastPage = isLastPage;
 	}
 
 	public List<T> getContent() {
@@ -35,11 +42,6 @@ public class PagedResponse<T> {
 		} else {
 			this.content = Collections.unmodifiableList(content);
 		}
-	}
-
-
-	public boolean isLast() {
-		return last;
 	}
 
 	public int getPage() {
@@ -74,11 +76,4 @@ public class PagedResponse<T> {
 		this.totalPages = totalPages;
 	}
 
-	public void setLast(boolean last) {
-		this.last = last;
-	}
-	
-	
-	
 }
-
