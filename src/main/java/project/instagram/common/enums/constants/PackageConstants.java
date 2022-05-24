@@ -2,7 +2,7 @@ package project.instagram.common.enums.constants;
 
 public class PackageConstants {
 	
-	public static final String TYPE_OF_PACKAGE_EXISTS = "Type of package exists";
+	public static final String TYPE_OF_PACKAGE_EXISTS = "Type of package is exists";
 	
 	public static final String DELETED_TYPE_OF_PACKAGE_FAILED = "Deleted type of package failed";
 	
@@ -14,13 +14,13 @@ public class PackageConstants {
 	
 	public static final String CREATED_TYPE_OF_PACKAGE_FAILED = "Created type of package failed";
 	
-	public static final String TYPE_OF_PACKAGE_NOT_EXISTS = "Type of package not exists";
+	public static final String TYPE_OF_PACKAGE_NOT_EXISTS = "Type of package is not exists";
 	
 	public static final String CREATED_PACKAGE_SUCCESSFULLY = "Created package successfully";
 	
 	public static final String CREATED_PACKAGE_CREATED_FAILED = "Created package failed";
 	
-	public static final String PACKAGE_NOT_EXISTS = "Package not exists";
+	public static final String PACKAGE_NOT_EXISTS = "Package is not exists";
 	
 	public static final String PACKAGE_EXISTS = "Package exists";
 	
@@ -41,5 +41,9 @@ public class PackageConstants {
 	public static final String PACKAGE_TYPE = "Package";
 	
 	public static final String EXTRA_PACKAGE_TYPE = "Extra package";
+	
+	public static final String CLIENT_HAVE_NOT_VALID_EXTRA_PACKAGE = "Client have not valid extra packahge";
+	
+	public static final String GET_SUCCESS = "Get successfully";
 	
 }

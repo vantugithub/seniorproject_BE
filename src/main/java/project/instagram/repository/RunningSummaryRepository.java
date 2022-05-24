@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import project.instagram.entity.Client;
 import project.instagram.entity.RunningSummary;
 import project.instagram.entity.TransactionPackage;
 
@@ -28,5 +29,12 @@ public interface RunningSummaryRepository extends JpaRepository<RunningSummary, 
 
 	Optional<RunningSummary> findRunningSummaryByExpiredDateGreaterThanEqualAndTransactionPackage(Date date,
 			TransactionPackage transactionPackage);
+	
+	@Query(value = "select * from running_summaries "
+			+ "where ( running_summaries.expired_date >= ?1 "
+			+ "and running_summaries.issued_date <= ?1 ) "
+			+ "and running_summaries.client = ?2 "
+			+ "and running_summaries.transaction_package = ?3", nativeQuery = true)
+	Optional<RunningSummary> findDetailsTransactionPackage(Date date, Client client, TransactionPackage transactionPackage);
 
 }
