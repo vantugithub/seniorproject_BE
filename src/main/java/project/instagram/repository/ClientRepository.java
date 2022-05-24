@@ -16,6 +16,6 @@ public interface ClientRepository extends JpaRepository<Client, UUID>{
 
 	Optional<Client> findByEmailAndActiveTrueAndRole(String email, Role role);
 	Optional<Client> findByEmail(String email);
-	Page<Client> findAllByOrderByIdDesc(Pageable pageable);
+	Page<Client> findAllByOrderByCreatedDateDesc(Pageable pageable);
 	
 }

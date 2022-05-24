@@ -14,7 +14,7 @@ public interface AdminService {
 	PagedResponse<UserResponse> findAllManagers(int page, int size);
 	ResponseEntity<MessageResponse> createStaff(CreateStaffRequest createStaffRequest);
 	ResponseEntity<MessageResponse> findAllRoles();
-	ResponseEntity<MessageResponse> lockingStaff(String staffId);
+	ResponseEntity<MessageResponse> changeActiveStaff(String staffId);
 	ResponseEntity<MessageResponse> updateStaff(UpdateStaffRequest updateStaffRequest);
 	ResponseEntity<MessageResponse> getStaff(String staffID);
 }

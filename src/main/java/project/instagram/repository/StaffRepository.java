@@ -16,6 +16,6 @@ public interface StaffRepository extends JpaRepository<Staff,UUID>{
 	
 	Optional<Staff> findByEmailAndActiveTrueAndRoleNot(String email, Role role);
 	Optional<Staff> findByEmailAndActiveTrue(String email);
-	Page<Staff> findAllByRole(Role role, Pageable pageable);
+	Page<Staff> findAllByRoleOrderByCreatedDateDesc(Role role, Pageable pageable);
 	Optional<Staff> findByEmail(String email);
 }

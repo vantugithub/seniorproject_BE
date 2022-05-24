@@ -54,7 +54,7 @@ public class ManagerServiceimpl implements ManagerService {
 	@Override
 	public PagedResponse<UserResponse> findAllClients(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Client> clients = clientRepository.findAllByOrderByIdDesc(pageable);
+		Page<Client> clients = clientRepository.findAllByOrderByCreatedDateDesc(pageable);
 
 		List<UserResponse> userResponses = new ArrayList<UserResponse>(clients.getContent().size());
 
