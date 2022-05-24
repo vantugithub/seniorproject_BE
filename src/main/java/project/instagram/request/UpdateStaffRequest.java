@@ -1,6 +1,8 @@
 package project.instagram.request;
 
 public class UpdateStaffRequest {
+	
+	private String staffId;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -76,7 +78,27 @@ public class UpdateStaffRequest {
 		this.active = active;
 	}
 
+	public UpdateStaffRequest(String staffId, String email, String firstName, String lastName, String phone,
+			String address, String roleName, boolean active) {
+		this.staffId = staffId;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.address = address;
+		this.roleName = roleName;
+		this.active = active;
+	}
+
 	public UpdateStaffRequest() {
+	}
+
+	public String getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(String staffId) {
+		this.staffId = staffId;
 	}
 
 }

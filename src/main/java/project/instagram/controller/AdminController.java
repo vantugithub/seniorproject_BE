@@ -64,11 +64,11 @@ public class AdminController {
 		return adminService.findAllRoles();
 	}
 
-	@PutMapping(path = "/lockingstaff/{staffId}")
+	@PutMapping(path = "/updateActive/{staffId}")
 	public ResponseEntity<MessageResponse> lockingStaff(
 			@PathVariable(name = "staffId", required = true) String staffId) {
 
-		return adminService.lockingStaff(staffId);
+		return adminService.changeActiveStaff(staffId);
 	}
 
 	@PutMapping(path = "/update")

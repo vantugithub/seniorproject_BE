@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.instagram.common.enums.constants.AppConstants;
 import project.instagram.request.PackageFormRequest;
 import project.instagram.response.MessageResponse;
+import project.instagram.response.PackageResponse;
+import project.instagram.response.PagedResponse;
 import project.instagram.service.PackageService;
 import project.instagram.service.TransactionPackageService;
 import project.instagram.service.TypeOfPackageService;
@@ -83,6 +86,22 @@ public class PackageController {
 			) {
 		
 		return transactionPackageService.purchaseExtraPackagesFromClient(extraPackageId);
+	}
+	
+	@GetMapping(path = "/packages")
+	public PagedResponse<PackageResponse> findAllPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllPackages(page, size);
+	}
+	
+	@GetMapping(path = "/extrapackages")
+	public PagedResponse<PackageResponse> findAllExtraPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllExtraPackages(page, size);
 	}
 	
 }

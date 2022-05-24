@@ -113,15 +113,6 @@ public class AdminServiceImpl implements AdminService {
 		return true;
 	}
 
-	private boolean isStaffExists(String staffEmail) {
-		Optional<Staff> staff = staffRepository.findByEmail(staffEmail);
-
-		if (staff.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
 	private void updateActiveStaff(String staffId) {
 		UUID StaffUUID = UUID.fromString(staffId);
 		Staff staff = staffRepository.getById(StaffUUID);
@@ -148,7 +139,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public PagedResponse<UserResponse> findAllClients(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Client> clients = clientRepository.findAllByOrderByIdDesc(pageable);
+		Page<Client> clients = clientRepository.findAllByOrderByCreatedDateDesc(pageable);
 
 		List<UserResponse> userResponses = new ArrayList<UserResponse>(clients.getContent().size());
 
@@ -164,7 +155,7 @@ public class AdminServiceImpl implements AdminService {
 	public PagedResponse<UserResponse> findAllStaffs(int page, int size) {
 		Role role = roleRepository.findByName(RoleName.ROLE_STAFF);
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Staff> staffs = staffRepository.findAllByRole(role, pageable);
+		Page<Staff> staffs = staffRepository.findAllByRoleOrderByCreatedDateDesc(role, pageable);
 
 		List<UserResponse> userResponses = new ArrayList<UserResponse>(staffs.getContent().size());
 
@@ -180,7 +171,7 @@ public class AdminServiceImpl implements AdminService {
 	public PagedResponse<UserResponse> findAllManagers(int page, int size) {
 		Role role = roleRepository.findByName(RoleName.ROLE_MANAGER);
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Staff> managers = staffRepository.findAllByRole(role, pageable);
+		Page<Staff> managers = staffRepository.findAllByRoleOrderByCreatedDateDesc(role, pageable);
 
 		List<UserResponse> userResponses = new ArrayList<UserResponse>(managers.getContent().size());
 
@@ -245,7 +236,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> lockingStaff(String staffId) {
+	public ResponseEntity<MessageResponse> changeActiveStaff(String staffId) {
 		MessageResponse messageResponse = new MessageResponse();
 		UUID StaffUUID = UUID.fromString(staffId);
 		if (!isStaffExists(StaffUUID)) {
@@ -263,8 +254,11 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public ResponseEntity<MessageResponse> updateStaff(UpdateStaffRequest updateStaffRequest) {
+
 		MessageResponse messageResponse = new MessageResponse();
-		if (!isStaffExists(updateStaffRequest.getEmail())) {
+		UUID StaffUUID = UUID.fromString(updateStaffRequest.getStaffId());
+
+		if (!isStaffExists(StaffUUID)) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 
@@ -279,8 +273,10 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public ResponseEntity<MessageResponse> getStaff(String staffID) {
+
 		MessageResponse messageResponse = new MessageResponse();
 		UUID StaffUUID = UUID.fromString(staffID);
+
 		if (!isStaffExists(StaffUUID)) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
