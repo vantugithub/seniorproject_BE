@@ -1,6 +1,8 @@
 package project.instagram.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -11,52 +13,70 @@ import org.springframework.stereotype.Service;
 
 import project.instagram.common.enums.constants.AccountConstants;
 import project.instagram.common.enums.constants.PackageConstants;
+import project.instagram.common.enums.constants.TransactionConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.Package;
+import project.instagram.entity.RunningSummary;
 import project.instagram.entity.TransactionPackage;
+import project.instagram.entity.TypeOfPackage;
 import project.instagram.repository.ClientRepository;
+import project.instagram.repository.PackageRepository;
+import project.instagram.repository.RunningSummaryRepository;
 import project.instagram.repository.TransactionPackageRepository;
+import project.instagram.repository.TypeOfPackageRepository;
+import project.instagram.response.DetailsTransactionPackageResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
-import project.instagram.response.PagedResponse;
+import project.instagram.response.RemainingQuantityResponse;
+import project.instagram.response.RunningSummaryResponse;
 import project.instagram.response.TransactionPackageResponse;
-import project.instagram.response.UserResponse;
 import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.ClientService;
 import project.instagram.utils.DateTimeZoneUtils;
 
 @Service
 public class ClientServiceImpl implements ClientService {
-	
+
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
-	
+
 	@Autowired
 	private DateTimeZoneUtils dateTimeZoneUtils;
 
 	@Autowired
 	private TransactionPackageRepository transactionPackageRepository;
-	
+
 	@Autowired
 	private ClientRepository clientRepository;
-	
+
 	@Autowired
-    private ModelMapper mapper;
-	
+	private RunningSummaryRepository runningSummaryRepository;
+
+	@Autowired
+	private PackageRepository packageRepository;
+
+	@Autowired
+	private TypeOfPackageRepository typeOfPackageRepository;
+
+	@Autowired
+	private ModelMapper mapper;
+
 	TransactionPackageResponse checkExistsPackageOfClient(Optional<TransactionPackage> transactionPackage) {
-		if ( transactionPackage.isEmpty() ) {
+		if (transactionPackage.isEmpty()) {
 			return null;
 		}
-		TransactionPackageResponse transactionPackageResponse = 
-				mapper.map(transactionPackage.get(), TransactionPackageResponse.class);
+		TransactionPackageResponse transactionPackageResponse = mapper.map(transactionPackage.get(),
+				TransactionPackageResponse.class);
+
 		Package packageOfClient = transactionPackage.get().getParentPackage();
-		PackageResponse packageResponse = 
-				mapper.map(packageOfClient, PackageResponse.class);
+
+		PackageResponse packageResponse = mapper.map(packageOfClient, PackageResponse.class);
+
 		transactionPackageResponse.setValidPackage(packageResponse);
-		
+
 		return transactionPackageResponse;
 	}
-	
+
 	void updateMessageResponse(MessageResponse messageResponse, Object data, String message, HttpStatus httpStatus) {
 		messageResponse.setMessage(message);
 		messageResponse.setStatus(httpStatus.value());
@@ -81,22 +101,146 @@ public class ClientServiceImpl implements ClientService {
 
 		return messageResponse;
 	}
-	
+
+	private DetailsTransactionPackageResponse createDetailsTransactionPackageResponse(
+			Package packageOfTransactionPackage, Optional<RunningSummary> runningSummary, String transactionPackageId) {
+
+		TypeOfPackage typeOfPackage = typeOfPackageRepository
+				.getById(packageOfTransactionPackage.getTypeOfPackage().getId());
+
+		DetailsTransactionPackageResponse detailsTransactionPackageResponse = new DetailsTransactionPackageResponse();
+		RunningSummaryResponse runningSummaryResponse = new RunningSummaryResponse();
+		RemainingQuantityResponse remainingQuantityResponse = new RemainingQuantityResponse();
+
+		if (runningSummary.isEmpty()) {
+			remainingQuantityResponse.setRemainingQuantityCrawlHashtag(packageOfTransactionPackage.getCrawlQuantity());
+			remainingQuantityResponse
+					.setRemainingQuantitySearchHashtag(packageOfTransactionPackage.getSearchQuantity());
+
+			detailsTransactionPackageResponse.setRemainingQuantityResponse(remainingQuantityResponse);
+			detailsTransactionPackageResponse.setRunningSummaryResponse(runningSummaryResponse);
+			detailsTransactionPackageResponse.setTransactionPackageId(transactionPackageId);
+		} else {
+			runningSummaryResponse = mapper.map(runningSummary.get(), RunningSummaryResponse.class);
+			runningSummaryResponse.setId(runningSummary.get().getId().toString());
+
+			if (PackageConstants.PACKAGE_TYPE.equals(typeOfPackage.getName())) {
+				remainingQuantityResponse
+						.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
+								- runningSummary.get().getCrawledPackageQuantity()));
+
+				remainingQuantityResponse
+						.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
+								- runningSummary.get().getSearchedPackageQuantity()));
+			} else {
+				remainingQuantityResponse
+						.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
+								- runningSummary.get().getCrawledExtraPackageQuantity()));
+
+				remainingQuantityResponse
+						.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
+								- runningSummary.get().getSearchedExtraPackageQuantity()));
+			}
+
+			detailsTransactionPackageResponse.setRemainingQuantityResponse(remainingQuantityResponse);
+			detailsTransactionPackageResponse.setRunningSummaryResponse(runningSummaryResponse);
+			detailsTransactionPackageResponse.setTransactionPackageId(transactionPackageId);
+		}
+
+		return detailsTransactionPackageResponse;
+	}
 
 	@Override
 	public ResponseEntity<MessageResponse> getValidPackage() {
 		MessageResponse messageResponse = new MessageResponse();
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
-		
-		if ( existsValidPackageOfClient(currentDate, client) == null ) {
+
+		if (existsValidPackageOfClient(currentDate, client) == null) {
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 			messageResponse.setMessage(AccountConstants.CLIENT_IS_NOT_A_MEMBER);
-			
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 		messageResponse = existsValidPackageOfClient(currentDate, client);
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> getValidExtraPackage() {
+		MessageResponse messageResponse = new MessageResponse();
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+
+		List<TransactionPackage> transactionPackages = transactionPackageRepository
+				.findAllValidExtraTransactionPackages(PackageConstants.EXTRA_PACKAGE_TYPE, client.getId().toString(),
+						currentDate);
+
+		if (transactionPackages.size() == 0) {
+			messageResponse.setStatus(HttpStatus.OK.value());
+			messageResponse.setMessage(PackageConstants.CLIENT_HAVE_NOT_VALID_EXTRA_PACKAGE);
+
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+		}
+
+		List<TransactionPackageResponse> transactionPackageResponses = new ArrayList<TransactionPackageResponse>();
+
+		for (TransactionPackage transactionPackage : transactionPackages) {
+			TransactionPackageResponse transactionPackageResponse = mapper.map(transactionPackage,
+					TransactionPackageResponse.class);
+			PackageResponse packageResponse = mapper.map(transactionPackage.getParentPackage(), PackageResponse.class);
+			transactionPackageResponse.setValidPackage(packageResponse);
+			transactionPackageResponses.add(transactionPackageResponse);
+		}
+		messageResponse.setStatus(HttpStatus.OK.value());
+		messageResponse.setMessage(PackageConstants.GET_SUCCESS);
+		messageResponse.setData(transactionPackageResponses);
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> getDetailsValidTransactionPackage(String transactionPackageId) {
+		MessageResponse messageResponse = new MessageResponse();
+
+		Optional<TransactionPackage> transactionPackage = transactionPackageRepository
+				.findById(Integer.valueOf(transactionPackageId));
+
+		if (transactionPackage.isEmpty()) {
+			messageResponse.setMessage(TransactionConstants.TRANSACTION_PACKAGE_NOT_EXISTS);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		
+		Optional<RunningSummary> runningSummary = runningSummaryRepository.findDetailsTransactionPackage(currentDate,
+				client, transactionPackage.get());
+
+		Package packageOfTransactionPackage = packageRepository
+				.getById(transactionPackage.get().getParentPackage().getId());
+
+		if (runningSummary.isEmpty()) {
+			DetailsTransactionPackageResponse detailsTransactionPackageResponse = createDetailsTransactionPackageResponse(
+					packageOfTransactionPackage, runningSummary, transactionPackageId);
+			
+			messageResponse.setMessage(TransactionConstants.RUNNING_SUMMARY_NOT_EXISTS);
+			messageResponse.setStatus(HttpStatus.OK.value());
+			messageResponse.setData(detailsTransactionPackageResponse);
+
+			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+		}
+
+		DetailsTransactionPackageResponse detailsTransactionPackageResponse = createDetailsTransactionPackageResponse(
+				packageOfTransactionPackage, runningSummary, transactionPackageId);
+		
+		messageResponse.setMessage(TransactionConstants.RUNNING_SUMMARY_EXISTS);
+		messageResponse.setStatus(HttpStatus.OK.value());
+		messageResponse.setData(detailsTransactionPackageResponse);
+
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 

@@ -22,7 +22,7 @@ import project.instagram.common.enums.constants.PackageConstants;
 
 @Entity
 @Table(name = "RunningSummaries")
-public class RunningSummary implements Serializable{
+public class RunningSummary implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

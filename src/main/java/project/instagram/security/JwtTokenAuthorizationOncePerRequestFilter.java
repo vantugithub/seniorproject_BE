@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import project.instagram.repository.ClientRepository;
-import project.instagram.repository.StaffRepository;
 
 @Component
 public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFilter {
@@ -29,9 +28,6 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
 
     @Autowired
     private JwtInMemoryClientDetailsService jwtInMemoryUserDetailsService;
-    
-    @Autowired
-    private StaffRepository staffRepository;
     
     @Autowired
     private ClientRepository clientRepository;

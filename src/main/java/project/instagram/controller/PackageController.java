@@ -39,13 +39,13 @@ public class PackageController {
 		return typeOfPackageService.createTypeOfPackage(typeOfPackageName);
 	}
 	
-	@PostMapping(value = "/admin/package/create")
+	@PostMapping(value = "/manager/package/create")
 	public ResponseEntity<MessageResponse> createPackage(@ModelAttribute PackageFormRequest packageFormRequest) {
 		
 		return packageService.createPackage(packageFormRequest);
 	}
 	
-	@PutMapping(value = "/admin/package/{packageId}")
+	@PutMapping(value = "/manager/package/{packageId}")
 	public ResponseEntity<MessageResponse> updateActivePackage(
 			@PathVariable(name = "packageId", required = true) String packageId) {
 		

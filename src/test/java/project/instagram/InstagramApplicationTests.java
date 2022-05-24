@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.DateRange;
 import project.instagram.entity.Hashtag;
@@ -147,8 +148,15 @@ class InstagramApplicationTests {
 	
 	@Test
 	void test8() {
-		HashtagClientManagement hashtagClientManagement = hashtagClientManagementRepository.findById(17L).get();
-		System.out.println(hashtagClientManagement.getDateStartCrawl().toString());
+		Client client = clientRepository.findByEmail("nguyenvantu11041999@gmail.com").get();
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		
+		TransactionPackage transactionPackage = transactionPackageRepository.findById(21).get();
+
+		Optional<RunningSummary> runn = runningSummaryRepository.findDetailsTransactionPackage(currentDate, client, transactionPackage);
+		
+		Package packageOfTransactionPackage = packageRepository.findById(transactionPackage.getParentPackage().getId()).get();
+		System.out.println(packageOfTransactionPackage.getName());
 	}
 
 }
