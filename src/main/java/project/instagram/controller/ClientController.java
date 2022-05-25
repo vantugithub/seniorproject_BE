@@ -6,9 +6,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.instagram.request.RequestFormRequest;
 import project.instagram.response.MessageResponse;
 import project.instagram.service.ClientService;
 
@@ -26,16 +29,22 @@ public class ClientController {
 		return clientService.getValidPackage();
 	}
 
-	@GetMapping(value = "/extrapackage")
+	@GetMapping(value = "/extraPackage")
 	public ResponseEntity<MessageResponse> getAllValidExtraPackage() {
 
-		return clientService.getValidExtraPackage();
+		return clientService.getValidExtraPackages();
 	}
 
-	@GetMapping(value = "/extrapackage/{transactionPackageId}")
+	@GetMapping(value = "/extraPackage/{transactionPackageId}")
 	public ResponseEntity<MessageResponse> getDetailsValidExtraPackage(
 			@PathVariable(name = "transactionPackageId", required = true) String transactionPackageId) {
 
 		return clientService.getDetailsValidTransactionPackage(transactionPackageId);
+	}
+
+	@PostMapping(value = "/requests")
+	public ResponseEntity<MessageResponse> createRequest(@RequestBody RequestFormRequest requestFormRequest) {
+
+		return clientService.createRequest(requestFormRequest);
 	}
 }

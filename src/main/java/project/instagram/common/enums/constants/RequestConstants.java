@@ -5,5 +5,9 @@ public class RequestConstants {
 	
 	public static final String REQUEST_NOT_EXISTS = "Request not exists";
 	
-	public static final String REQUEST_FAILED = "Rquest failed";
+	public static final String REQUEST_FAILED = "Request failed";
+	
+	public static final String REQUEST_SUCCESS = "Request success";
+	
+	public static final String GET_REQUEST_SUCCESSFULLY = "get request successfully";
 }
