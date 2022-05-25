@@ -24,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String ROLE_CLIENT = RoleName.ROLE_CLIENT.name().split("_")[1];
 	private static final String ROLE_ADMIN = RoleName.ROLE_ADMIN.name().split("_")[1];
+	private static final String ROLE_STAFF = RoleName.ROLE_STAFF.name().split("_")[1];
+	private static final String ROLE_MANAGER = RoleName.ROLE_MANAGER.name().split("_")[1];
 	
 	@Autowired
     private JwtUnAuthorizedResponseAuthenticationEntryPoint jwtUnAuthorizedResponseAuthenticationEntryPoint;
@@ -52,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests().antMatchers("/api/auth/**").permitAll()
             .antMatchers("/api/client/**").hasAnyRole(ROLE_CLIENT)
             .antMatchers("/api/admin/**").hasAnyRole(ROLE_ADMIN)
+            .antMatchers("/api/staff/**").hasAnyRole(ROLE_STAFF)
+            .antMatchers("/api/manager/**").hasAnyRole(ROLE_MANAGER)
             .and()
             .authorizeRequests().antMatchers("/api/**").permitAll()
             .anyRequest().authenticated();

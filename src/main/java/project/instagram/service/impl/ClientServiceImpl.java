@@ -11,19 +11,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import project.instagram.common.enums.RequestName;
+import project.instagram.common.enums.StatusRequestName;
 import project.instagram.common.enums.constants.AccountConstants;
 import project.instagram.common.enums.constants.PackageConstants;
+import project.instagram.common.enums.constants.RequestConstants;
 import project.instagram.common.enums.constants.TransactionConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.Package;
+import project.instagram.entity.Request;
 import project.instagram.entity.RunningSummary;
+import project.instagram.entity.StatusOfRequest;
 import project.instagram.entity.TransactionPackage;
 import project.instagram.entity.TypeOfPackage;
+import project.instagram.entity.TypeOfRequest;
 import project.instagram.repository.ClientRepository;
 import project.instagram.repository.PackageRepository;
+import project.instagram.repository.RequestRepository;
 import project.instagram.repository.RunningSummaryRepository;
 import project.instagram.repository.TransactionPackageRepository;
 import project.instagram.repository.TypeOfPackageRepository;
+import project.instagram.request.RequestFormRequest;
 import project.instagram.response.DetailsTransactionPackageResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
@@ -57,6 +65,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private TypeOfPackageRepository typeOfPackageRepository;
+
+	@Autowired
+	private RequestRepository requestRepository;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -150,6 +161,25 @@ public class ClientServiceImpl implements ClientService {
 		return detailsTransactionPackageResponse;
 	}
 
+	private Request createRequest(Client client, RequestFormRequest requestFormRequest) {
+		Request request = new Request();
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		StringBuilder newRequestId = new StringBuilder(currentDate.toString().replace(" ", "")+"_"+client.getId().toString());
+		
+		request.setId(newRequestId.toString());
+		request.setClientRequest(client);
+		request.setReason(requestFormRequest.getReason());
+		request.setTitle(requestFormRequest.getTitle());
+		StatusOfRequest statusOfRequest = new StatusOfRequest(StatusRequestName.PENDING);
+		request.setStatusOfRequest(statusOfRequest);
+		TypeOfRequest typeOfRequest = new TypeOfRequest(RequestName.HANDLE_REQUEST);
+		request.setTypeOfRequest(typeOfRequest);
+		
+		request = requestRepository.save(request);
+
+		return request;
+	}
+
 	@Override
 	public ResponseEntity<MessageResponse> getValidPackage() {
 		MessageResponse messageResponse = new MessageResponse();
@@ -168,7 +198,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> getValidExtraPackage() {
+	public ResponseEntity<MessageResponse> getValidExtraPackages() {
 		MessageResponse messageResponse = new MessageResponse();
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
@@ -216,7 +246,7 @@ public class ClientServiceImpl implements ClientService {
 
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
-		
+
 		Optional<RunningSummary> runningSummary = runningSummaryRepository.findDetailsTransactionPackage(currentDate,
 				client, transactionPackage.get());
 
@@ -226,7 +256,7 @@ public class ClientServiceImpl implements ClientService {
 		if (runningSummary.isEmpty()) {
 			DetailsTransactionPackageResponse detailsTransactionPackageResponse = createDetailsTransactionPackageResponse(
 					packageOfTransactionPackage, runningSummary, transactionPackageId);
-			
+
 			messageResponse.setMessage(TransactionConstants.RUNNING_SUMMARY_NOT_EXISTS);
 			messageResponse.setStatus(HttpStatus.OK.value());
 			messageResponse.setData(detailsTransactionPackageResponse);
@@ -236,11 +266,30 @@ public class ClientServiceImpl implements ClientService {
 
 		DetailsTransactionPackageResponse detailsTransactionPackageResponse = createDetailsTransactionPackageResponse(
 				packageOfTransactionPackage, runningSummary, transactionPackageId);
-		
+
 		messageResponse.setMessage(TransactionConstants.RUNNING_SUMMARY_EXISTS);
 		messageResponse.setStatus(HttpStatus.OK.value());
 		messageResponse.setData(detailsTransactionPackageResponse);
 
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> createRequest(RequestFormRequest requestFormRequest) {
+		MessageResponse messageResponse = new MessageResponse();
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		Request request = createRequest(client, requestFormRequest);
+		
+		if ( request == null) {
+			messageResponse.setMessage(RequestConstants.CREATED_REQUEST_FAILED);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+		
+		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
+		messageResponse.setStatus(HttpStatus.OK.value());
+		
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 
