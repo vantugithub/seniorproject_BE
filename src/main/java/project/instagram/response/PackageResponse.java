@@ -1,7 +1,13 @@
 package project.instagram.response;
 
-public class PackageResponse {
+import java.io.Serializable;
 
+public class PackageResponse implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private byte numberOfMonths;
 	private String name;
@@ -10,6 +16,7 @@ public class PackageResponse {
 	private short numberOfPostInEachSearch;
 	private short numberOfPostsPerHashtag;
 	private double price;
+	private boolean active;
 
 	public String getName() {
 		return name;
@@ -99,5 +106,26 @@ public class PackageResponse {
 		this.numberOfPostsPerHashtag = numberOfPostsPerHashtag;
 		this.price = price;
 	}
-	
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public PackageResponse(String id, byte numberOfMonths, String name, byte crawlQuantity, byte searchQuantity,
+			short numberOfPostInEachSearch, short numberOfPostsPerHashtag, double price, boolean active) {
+		this.id = id;
+		this.numberOfMonths = numberOfMonths;
+		this.name = name;
+		this.crawlQuantity = crawlQuantity;
+		this.searchQuantity = searchQuantity;
+		this.numberOfPostInEachSearch = numberOfPostInEachSearch;
+		this.numberOfPostsPerHashtag = numberOfPostsPerHashtag;
+		this.price = price;
+		this.active = active;
+	}
+
 }

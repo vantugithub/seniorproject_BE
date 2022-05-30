@@ -137,7 +137,7 @@ class InstagramApplicationTests {
 	void test7( ) {
 		Date currentDate = dateTimeZoneUtils.getDateZoneGMT();
 		System.out.println(currentDate);
-		Set<HashtagClientManagement> hashtagClientManagements = hashtagClientManagementRepository.findAllByDateStartCrawl(currentDate);
+		Set<HashtagClientManagement> hashtagClientManagements = hashtagClientManagementRepository.findAllByDateStartCrawlAndActiveTrue(currentDate);
 		
 		if ( hashtagClientManagements.size() == 0 ) {
 			System.out.println("none");

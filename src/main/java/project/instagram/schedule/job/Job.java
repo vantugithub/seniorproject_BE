@@ -18,8 +18,8 @@ public class Job implements Serializable {
 	@JsonProperty("statusJob")
 	private String statusJob;
 	
-	@JsonProperty("listIdClients")
-	private Set<String> listIdClients;
+	@JsonProperty("hashtagClientManagementJobs")
+	private Set<HashtagClientManagementJob> hashtagClientManagementJobs;
 	
 	public String getHashtag() {
 		return hashtag;
@@ -29,12 +29,12 @@ public class Job implements Serializable {
 		this.hashtag = hashtag;
 	}
 	
-	public Set<String> getListIdClients() {
-		return listIdClients;
+	public Set<HashtagClientManagementJob> getHashtagClientManagementJobs() {
+		return hashtagClientManagementJobs;
 	}
-	
-	public void setListIdClients(Set<String> listIdClients) {
-		this.listIdClients = listIdClients;
+
+	public void setHashtagClientManagementJobs(Set<HashtagClientManagementJob> hashtagClientManagementJobs) {
+		this.hashtagClientManagementJobs = hashtagClientManagementJobs;
 	}
 
 	public Job() {
@@ -52,12 +52,13 @@ public class Job implements Serializable {
 		this.statusJob = statusJob;
 	}
 
-	public Job(String hashtag, int crawlQuantity, String statusJob, Set<String> listIdClients) {
+	public Job(String hashtag, int crawlQuantity, String statusJob,
+			Set<HashtagClientManagementJob> hashtagClientManagementJobs) {
 		super();
 		this.hashtag = hashtag;
 		this.crawlQuantity = crawlQuantity;
 		this.statusJob = statusJob;
-		this.listIdClients = listIdClients;
+		this.hashtagClientManagementJobs = hashtagClientManagementJobs;
 	}
 
 	public void setCrawlQuantity(int crawlQuantity) {
@@ -71,7 +72,7 @@ public class Job implements Serializable {
 	@Override
 	public String toString() {
 		return "Job [hashtag=" + hashtag + ", crawlQuantity=" + crawlQuantity + ", statusJob=" + statusJob
-				+ ", listIdClients=" + listIdClients + "]";
+				+ ", hashtagClientManagementJobs=" + hashtagClientManagementJobs + "]";
 	}
 
 }

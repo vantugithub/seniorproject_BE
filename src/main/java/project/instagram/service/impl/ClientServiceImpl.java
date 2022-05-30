@@ -131,32 +131,32 @@ public class ClientServiceImpl implements ClientService {
 			detailsTransactionPackageResponse.setRemainingQuantityResponse(remainingQuantityResponse);
 			detailsTransactionPackageResponse.setRunningSummaryResponse(runningSummaryResponse);
 			detailsTransactionPackageResponse.setTransactionPackageId(transactionPackageId);
-		} else {
-			runningSummaryResponse = mapper.map(runningSummary.get(), RunningSummaryResponse.class);
-			runningSummaryResponse.setId(runningSummary.get().getId().toString());
 
-			if (PackageConstants.PACKAGE_TYPE.equals(typeOfPackage.getName())) {
-				remainingQuantityResponse
-						.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
-								- runningSummary.get().getCrawledPackageQuantity()));
-
-				remainingQuantityResponse
-						.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
-								- runningSummary.get().getSearchedPackageQuantity()));
-			} else {
-				remainingQuantityResponse
-						.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
-								- runningSummary.get().getCrawledExtraPackageQuantity()));
-
-				remainingQuantityResponse
-						.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
-								- runningSummary.get().getSearchedExtraPackageQuantity()));
-			}
-
-			detailsTransactionPackageResponse.setRemainingQuantityResponse(remainingQuantityResponse);
-			detailsTransactionPackageResponse.setRunningSummaryResponse(runningSummaryResponse);
-			detailsTransactionPackageResponse.setTransactionPackageId(transactionPackageId);
+			return detailsTransactionPackageResponse;
 		}
+
+		runningSummaryResponse = mapper.map(runningSummary.get(), RunningSummaryResponse.class);
+		if (PackageConstants.PACKAGE_TYPE.equals(typeOfPackage.getName())) {
+			remainingQuantityResponse
+					.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
+							- runningSummary.get().getCrawledPackageQuantity()));
+			remainingQuantityResponse
+					.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
+							- runningSummary.get().getSearchedPackageQuantity()));
+		} else {
+			remainingQuantityResponse
+					.setRemainingQuantityCrawlHashtag((byte) (packageOfTransactionPackage.getCrawlQuantity()
+							- runningSummary.get().getCrawledExtraPackageQuantity()));
+
+			remainingQuantityResponse
+					.setRemainingQuantitySearchHashtag((byte) (packageOfTransactionPackage.getSearchQuantity()
+							- runningSummary.get().getSearchedExtraPackageQuantity()));
+		}
+
+		runningSummaryResponse.setId(runningSummary.get().getId().toString());
+		detailsTransactionPackageResponse.setRemainingQuantityResponse(remainingQuantityResponse);
+		detailsTransactionPackageResponse.setRunningSummaryResponse(runningSummaryResponse);
+		detailsTransactionPackageResponse.setTransactionPackageId(transactionPackageId);
 
 		return detailsTransactionPackageResponse;
 	}
@@ -164,8 +164,9 @@ public class ClientServiceImpl implements ClientService {
 	private Request createRequest(Client client, RequestFormRequest requestFormRequest) {
 		Request request = new Request();
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
-		StringBuilder newRequestId = new StringBuilder(currentDate.toString().replace(" ", "")+"_"+client.getId().toString());
-		
+		StringBuilder newRequestId = new StringBuilder(
+				currentDate.toString().replace(" ", "") + "_" + client.getId().toString());
+
 		request.setId(newRequestId.toString());
 		request.setClientRequest(client);
 		request.setReason(requestFormRequest.getReason());
@@ -174,7 +175,7 @@ public class ClientServiceImpl implements ClientService {
 		request.setStatusOfRequest(statusOfRequest);
 		TypeOfRequest typeOfRequest = new TypeOfRequest(RequestName.HANDLE_REQUEST);
 		request.setTypeOfRequest(typeOfRequest);
-		
+
 		request = requestRepository.save(request);
 
 		return request;
@@ -279,17 +280,17 @@ public class ClientServiceImpl implements ClientService {
 		MessageResponse messageResponse = new MessageResponse();
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Request request = createRequest(client, requestFormRequest);
-		
-		if ( request == null) {
+
+		if (request == null) {
 			messageResponse.setMessage(RequestConstants.CREATED_REQUEST_FAILED);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-			
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
-		
+
 		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
 		messageResponse.setStatus(HttpStatus.OK.value());
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 

@@ -23,6 +23,7 @@ import project.instagram.request.PackageFormRequest;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.response.TypeOfPackageResponse;
 import project.instagram.service.PackageService;
 
 @Service
@@ -64,7 +65,8 @@ public class PackageServiceImpl implements PackageService {
 	private PackageResponse createPackageResponse(Package p) {
 		PackageResponse newPackageResponse = mapper.map(p, PackageResponse.class);
 		newPackageResponse.setId(p.getId().toString());
-		
+		newPackageResponse.setActive(p.isActive());
+
 		return newPackageResponse;
 	}
 
@@ -113,7 +115,9 @@ public class PackageServiceImpl implements PackageService {
 
 		messageResponse.setStatus(HttpStatus.OK.value());
 		messageResponse.setMessage(PackageConstants.UPDATED_PACKAGE_SUCCESSFULLY);
-		messageResponse.setData(updatingPackage.get());
+		PackageResponse packageResponse = mapper.map(updatingPackage.get(), PackageResponse.class);
+		packageResponse.setId(updatingPackage.get().getId().toString());
+		messageResponse.setData(packageResponse);
 
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
@@ -136,7 +140,7 @@ public class PackageServiceImpl implements PackageService {
 
 	@Override
 	public PagedResponse<PackageResponse> findAllExtraPackages(int page, int size) {
-		
+
 		Pageable pageable = PageRequest.of(page, size);
 		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.EXTRA_PACKAGE_TYPE).get();
 		Page<Package> packages = packageRepository.findAllByActiveTrueAndTypeOfPackage(typeOfPackage, pageable);
@@ -149,6 +153,30 @@ public class PackageServiceImpl implements PackageService {
 
 		return new PagedResponse<>(packagesResponse, packages.getNumber(), packages.getSize(),
 				packages.getTotalElements(), packages.getTotalPages(), packages.isLast());
+	}
+
+	@Override
+	public PagedResponse<TypeOfPackageResponse> findAllTypeOfPackages(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<TypeOfPackage> typeOfPackages = typeOfPackageRepository.findAll(pageable);
+
+		List<TypeOfPackageResponse> typeOfPackagesResponse = new ArrayList<TypeOfPackageResponse>(
+				typeOfPackages.getContent().size());
+
+		for (TypeOfPackage typeOfPackage : typeOfPackages.getContent()) {
+			typeOfPackagesResponse.add(createTypeOfPackageResponse(typeOfPackage));
+		}
+
+		return new PagedResponse<>(typeOfPackagesResponse, typeOfPackages.getNumber(), typeOfPackages.getSize(),
+				typeOfPackages.getTotalElements(), typeOfPackages.getTotalPages(), typeOfPackages.isLast());
+	}
+
+	private TypeOfPackageResponse createTypeOfPackageResponse(TypeOfPackage typeOfPackage) {
+		TypeOfPackageResponse typeOfPackageResponse = new TypeOfPackageResponse();
+		typeOfPackageResponse.setId(typeOfPackage.getId().toString());
+		typeOfPackageResponse.setName(typeOfPackage.getName());
+
+		return typeOfPackageResponse;
 	}
 
 }

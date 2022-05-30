@@ -35,7 +35,7 @@ public class PackageController {
 	@Autowired
 	private TransactionPackageService transactionPackageService;
 	
-	@PostMapping(value = "/admin/typeofpackage/create/{typeOfPackageName}")
+	@PostMapping(value = "/manager/typeofpackage/create/{typeOfPackageName}")
 	public ResponseEntity<MessageResponse> createTypeOfPackage(
 			@PathVariable(name = "typeOfPackageName", required = true) String typeOfPackageName) {
 		
