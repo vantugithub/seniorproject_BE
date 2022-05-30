@@ -31,7 +31,7 @@ public class StaffController {
 		return staffService.findAllNotPendingRequests(page, size);
 	}
 
-	@GetMapping(path = "/pendingRequests")
+	@GetMapping(path = "/requests/pending")
 	public PagedResponse<RequestResponse> findAllPendingRequests(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
@@ -39,8 +39,8 @@ public class StaffController {
 		return staffService.findAllPendingRequests(page, size);
 	}
 
-	@GetMapping(path = "/request/{requestId}")
-	public ResponseEntity<MessageResponse> getDetailsRequest(
+	@GetMapping(path = "/request/handle/{requestId}")
+	public ResponseEntity<MessageResponse> getDetailsHandleRequest(
 			@PathVariable(name = "requestId", required = true) String requestId) {
 
 		return staffService.getDetailsRequest(requestId);

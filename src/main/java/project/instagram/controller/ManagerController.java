@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import project.instagram.common.enums.constants.AppConstants;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.response.TypeOfPackageResponse;
 import project.instagram.response.UserResponse;
 import project.instagram.service.ManagerService;
+import project.instagram.service.PackageService;
 
 @RestController
 @RequestMapping(value = "/api/manager/")
@@ -23,6 +25,9 @@ public class ManagerController {
 	
 	@Autowired
 	private ManagerService managerService;
+	
+	@Autowired
+	private PackageService packageService;
 	
 	@GetMapping(path = "/clients")
 	public PagedResponse<UserResponse> findAllClients(
@@ -44,6 +49,14 @@ public class ManagerController {
 			@PathVariable(name = "staffId", required = true) String staffId) {
 
 		return managerService.getClient(staffId);
+	}
+	
+	@GetMapping(path = "/type-of-packages")
+	public PagedResponse<TypeOfPackageResponse> findAllPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllTypeOfPackages(page, size);
 	}
 	
 }

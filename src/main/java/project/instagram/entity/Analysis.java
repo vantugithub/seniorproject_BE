@@ -1,7 +1,6 @@
 package project.instagram.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -36,10 +32,8 @@ public class Analysis implements Serializable{
 	@Column(name = "nameHashtag", length = 255)
 	private String nameHashtag;
 	
-	@Column(name = "dateOfAnalysis")
-	@UpdateTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateOfAnalysis;
+	@Column(name = "dateOfAnalysis", length = 100)
+	private String dateOfAnalysis;
 	
 	@ManyToOne
 	@JoinColumn(name = "topic", nullable = false)
@@ -69,11 +63,11 @@ public class Analysis implements Serializable{
 		this.nameHashtag = nameHashtag;
 	}
 
-	public Date getDateOfAnalysis() {
+	public String getDateOfAnalysis() {
 		return dateOfAnalysis;
 	}
 
-	public void setDateOfAnalysis(Date dateOfAnalysis) {
+	public void setDateOfAnalysis(String dateOfAnalysis) {
 		this.dateOfAnalysis = dateOfAnalysis;
 	}
 
@@ -88,7 +82,7 @@ public class Analysis implements Serializable{
 	public Analysis() {
 	}
 
-	public Analysis(int id, String count, String nameHashtag, Date dateOfAnalysis, Hashtag hashtag) {
+	public Analysis(int id, String count, String nameHashtag, String dateOfAnalysis, Hashtag hashtag) {
 		super();
 		this.id = id;
 		this.count = count;
