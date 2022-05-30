@@ -52,7 +52,7 @@ public class ManagerController {
 	}
 	
 	@GetMapping(path = "/type-of-packages")
-	public PagedResponse<TypeOfPackageResponse> findAllPackages(
+	public PagedResponse<TypeOfPackageResponse> findAllTypeOfPackages(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
