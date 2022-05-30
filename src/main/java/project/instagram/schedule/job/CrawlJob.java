@@ -79,6 +79,7 @@
 //		HashtagClientManagementJob hashtagClientManagementJob = new HashtagClientManagementJob();
 //		hashtagClientManagementJob.setTransactionPackage(hashtagClientManagement.getTransactionPackage().getId());
 //		hashtagClientManagementJob.setClientId(hashtagClientManagement.getClientManagement().getId().toString());
+//		hashtagClientManagementJob.setCrawlQuantity(hashtagClientManagement.getCrawlQuantity());
 //		hashtagClientManagementJob.setId(hashtagClientManagement.getId());
 //
 //		hashtagClientManagementJobs.add(hashtagClientManagementJob);
@@ -97,6 +98,7 @@
 //		HashtagClientManagementJob hashtagClientManagementJob = new HashtagClientManagementJob();
 //		hashtagClientManagementJob.setTransactionPackage(hashtagClientManagement.getTransactionPackage().getId());
 //		hashtagClientManagementJob.setClientId(hashtagClientManagement.getClientManagement().getId().toString());
+//		hashtagClientManagementJob.setCrawlQuantity(hashtagClientManagement.getCrawlQuantity());
 //		hashtagClientManagementJob.setId(hashtagClientManagement.getId());
 //
 //		mapCrawlJobInfo.get(hashtagName).setCrawlQuantity(hashtagClientManagement.getCrawlQuantity());
@@ -143,11 +145,12 @@
 //		hashtagRunningHistory.setType(JobConstants.CRAWL);
 //		hashtagRunningHistory.setRunningTime(currentDate);
 //		hashtagRunningHistory.setStatus(job.getStatusJob());
+//		hashtagRunningHistory.setCrawlQuantity(hashtagClientManagementJob.getCrawlQuantity());
 //
 //		hashtagRunningHistoryRepository.save(hashtagRunningHistory);
 //	}
 //
-//	@Scheduled(fixedRate = JobConstants.ONE_HOUR)
+//	@Scheduled(fixedRate = JobConstants.THREE_SECONDS)
 //	public void scheduleFixedRateTask() throws InterruptedException {
 //		System.out.println("Task - " + new Date());
 //		Set<HashtagClientManagement> hashtagClientManagements = getHashtagClientManagements();
@@ -162,7 +165,7 @@
 //		}
 //	}
 //
-//	@Scheduled(fixedRate = JobConstants.FIFTEEN)
+//	@Scheduled(fixedRate = JobConstants.THREE_SECONDS)
 //	public void scheduleGetResultCrawlJobQueue() throws InterruptedException {
 //		Object consultResult = redisTemplate.opsForList().leftPop("resultCrawlJobQueue", Duration.ofMillis(1000));
 //		if (consultResult != null) {
@@ -172,6 +175,7 @@
 //			try {
 //
 //				Job job = mapper.readValue(result, Job.class);
+//				System.out.println(job.toString());
 //				for (HashtagClientManagementJob hashtagClientManagementJob : job.getHashtagClientManagementJobs()) {
 //					createHashtagRunningHistory(job, hashtagClientManagementJob);
 //				}

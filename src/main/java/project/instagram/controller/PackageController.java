@@ -93,7 +93,7 @@ public class PackageController {
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		return packageService.findAllPackages(page, size);
+		return packageService.findAllPackagesForClient(page, size);
 	}
 	
 	@GetMapping(path = "/extrapackages")
@@ -101,7 +101,7 @@ public class PackageController {
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		return packageService.findAllExtraPackages(page, size);
+		return packageService.findAllExtraPackagesForClient(page, size);
 	}
 	
 }

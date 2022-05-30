@@ -15,6 +15,9 @@ public class HashtagClientManagementJob implements Serializable {
 
 	@JsonProperty("clientId")
 	private String clientId;
+	
+	@JsonProperty("crawlQuantity")
+	private int crawlQuantity;
 
 	@JsonProperty("transactionPackage")
 	private long transactionPackage;
@@ -56,6 +59,21 @@ public class HashtagClientManagementJob implements Serializable {
 	public String toString() {
 		return "HashtagClientManagementJob [id=" + id + ", clientId=" + clientId + ", transactionPackage="
 				+ transactionPackage + "]";
+	}
+
+	public HashtagClientManagementJob(long id, String clientId, int crawlQuantity, long transactionPackage) {
+		this.id = id;
+		this.clientId = clientId;
+		this.crawlQuantity = crawlQuantity;
+		this.transactionPackage = transactionPackage;
+	}
+
+	public int getCrawlQuantity() {
+		return crawlQuantity;
+	}
+
+	public void setCrawlQuantity(int crawlQuantity) {
+		this.crawlQuantity = crawlQuantity;
 	}
 
 }
