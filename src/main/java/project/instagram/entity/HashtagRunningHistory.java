@@ -27,6 +27,9 @@ public class HashtagRunningHistory implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date runningTime;
 	
+	@Column(name = "crawlQuantity")
+	private int crawlQuantity;
+	
 	@Column(name = "type")
 	private String type;
 	
@@ -113,6 +116,27 @@ public class HashtagRunningHistory implements Serializable{
 	}
 
 	public void setTransactionPackage(TransactionPackage transactionPackage) {
+		this.transactionPackage = transactionPackage;
+	}
+
+	public int getCrawlQuantity() {
+		return crawlQuantity;
+	}
+
+	public void setCrawlQuantity(int crawlQuantity) {
+		this.crawlQuantity = crawlQuantity;
+	}
+
+	public HashtagRunningHistory(String id, Date runningTime, int crawlQuantity, String type, String status,
+			Client client, Hashtag hashtag, TransactionPackage transactionPackage) {
+		super();
+		this.id = id;
+		this.runningTime = runningTime;
+		this.crawlQuantity = crawlQuantity;
+		this.type = type;
+		this.status = status;
+		this.client = client;
+		this.hashtag = hashtag;
 		this.transactionPackage = transactionPackage;
 	}
 	

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import project.instagram.common.enums.constants.AppConstants;
 import project.instagram.response.MessageResponse;
+import project.instagram.response.PackageResponse;
 import project.instagram.response.PagedResponse;
 import project.instagram.response.TypeOfPackageResponse;
 import project.instagram.response.UserResponse;
@@ -57,6 +58,22 @@ public class ManagerController {
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		return packageService.findAllTypeOfPackages(page, size);
+	}
+	
+	@GetMapping(path = "/packages")
+	public PagedResponse<PackageResponse> findAllPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllPackagesForStaff(page, size);
+	}
+	
+	@GetMapping(path = "/extra-packages")
+	public PagedResponse<PackageResponse> findAllExtraPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllExtraPackagesForStaff(page, size);
 	}
 	
 }

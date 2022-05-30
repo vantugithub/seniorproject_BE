@@ -123,7 +123,7 @@ public class PackageServiceImpl implements PackageService {
 	}
 
 	@Override
-	public PagedResponse<PackageResponse> findAllPackages(int page, int size) {
+	public PagedResponse<PackageResponse> findAllPackagesForClient(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.PACKAGE_TYPE).get();
 		Page<Package> packages = packageRepository.findAllByActiveTrueAndTypeOfPackage(typeOfPackage, pageable);
@@ -139,7 +139,7 @@ public class PackageServiceImpl implements PackageService {
 	}
 
 	@Override
-	public PagedResponse<PackageResponse> findAllExtraPackages(int page, int size) {
+	public PagedResponse<PackageResponse> findAllExtraPackagesForClient(int page, int size) {
 
 		Pageable pageable = PageRequest.of(page, size);
 		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.EXTRA_PACKAGE_TYPE).get();
@@ -177,6 +177,38 @@ public class PackageServiceImpl implements PackageService {
 		typeOfPackageResponse.setName(typeOfPackage.getName());
 
 		return typeOfPackageResponse;
+	}
+
+	@Override
+	public PagedResponse<PackageResponse> findAllPackagesForStaff(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.PACKAGE_TYPE).get();
+		Page<Package> packages = packageRepository.findAllByTypeOfPackage(typeOfPackage, pageable);
+
+		List<PackageResponse> packagesResponse = new ArrayList<PackageResponse>(packages.getContent().size());
+
+		for (Package packageInList : packages.getContent()) {
+			packagesResponse.add(createPackageResponse(packageInList));
+		}
+
+		return new PagedResponse<>(packagesResponse, packages.getNumber(), packages.getSize(),
+				packages.getTotalElements(), packages.getTotalPages(), packages.isLast());
+	}
+
+	@Override
+	public PagedResponse<PackageResponse> findAllExtraPackagesForStaff(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.EXTRA_PACKAGE_TYPE).get();
+		Page<Package> packages = packageRepository.findAllByTypeOfPackage(typeOfPackage, pageable);
+
+		List<PackageResponse> packagesResponse = new ArrayList<PackageResponse>(packages.getContent().size());
+
+		for (Package packageInList : packages.getContent()) {
+			packagesResponse.add(createPackageResponse(packageInList));
+		}
+
+		return new PagedResponse<>(packagesResponse, packages.getNumber(), packages.getSize(),
+				packages.getTotalElements(), packages.getTotalPages(), packages.isLast());
 	}
 
 }

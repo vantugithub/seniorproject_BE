@@ -16,4 +16,5 @@ public interface PackageRepository extends JpaRepository<Package, UUID>{
 	Optional<Package> findPackageByName(String packageName);
 	Optional<Package> findPackageByIdAndTypeOfPackage(UUID packageUUID, TypeOfPackage typeOfPackage);
 	Page<Package> findAllByActiveTrueAndTypeOfPackage(TypeOfPackage typeOfPackage, Pageable pageable);
+	Page<Package> findAllByTypeOfPackage(TypeOfPackage typeOfPackage, Pageable pageable);
  }

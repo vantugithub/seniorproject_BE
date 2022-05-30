@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import project.instagram.common.enums.constants.AppConstants;
 import project.instagram.response.MessageResponse;
+import project.instagram.response.PackageResponse;
 import project.instagram.response.PagedResponse;
 import project.instagram.response.RequestResponse;
+import project.instagram.service.PackageService;
 import project.instagram.service.StaffService;
 
 @RestController
@@ -22,6 +24,9 @@ public class StaffController {
 
 	@Autowired
 	private StaffService staffService;
+	
+	@Autowired
+	private PackageService packageService;
 
 	@GetMapping(path = "/requests")
 	public PagedResponse<RequestResponse> findAllRequests(
@@ -44,5 +49,13 @@ public class StaffController {
 			@PathVariable(name = "requestId", required = true) String requestId) {
 
 		return staffService.getDetailsRequest(requestId);
+	}
+	
+	@GetMapping(path = "/extra-packages")
+	public PagedResponse<PackageResponse> findAllExtraPackages(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return packageService.findAllExtraPackagesForStaff(page, size);
 	}
 }
