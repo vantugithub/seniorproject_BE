@@ -35,7 +35,7 @@ public class PackageController {
 	@Autowired
 	private TransactionPackageService transactionPackageService;
 	
-	@PostMapping(value = "/manager/typeofpackage/create/{typeOfPackageName}")
+	@PostMapping(value = "/manager/type-of-package/create/{typeOfPackageName}")
 	public ResponseEntity<MessageResponse> createTypeOfPackage(
 			@PathVariable(name = "typeOfPackageName", required = true) String typeOfPackageName) {
 		
@@ -80,7 +80,7 @@ public class PackageController {
 		return transactionPackageService.confirmUpgradePackageWhenTheClientIsAMember(packageId, token);
 	}
 	
-	@PostMapping(value = "/client/extraPackage/purchase/{extraPackageId}")
+	@PostMapping(value = "/client/extra-package/purchase/{extraPackageId}")
 	public ResponseEntity<MessageResponse> purchaseExtraPackageFromClient(
 			@PathVariable(name = "extraPackageId", required = true) String extraPackageId
 			) {
@@ -96,7 +96,7 @@ public class PackageController {
 		return packageService.findAllPackagesForClient(page, size);
 	}
 	
-	@GetMapping(path = "/extrapackages")
+	@GetMapping(path = "/extra-packages")
 	public PagedResponse<PackageResponse> findAllExtraPackages(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {

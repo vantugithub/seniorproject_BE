@@ -211,4 +211,31 @@ public class PackageServiceImpl implements PackageService {
 				packages.getTotalElements(), packages.getTotalPages(), packages.isLast());
 	}
 
+	@Override
+	public ResponseEntity<MessageResponse> createExtraPackageByStaff(PackageFormRequest packageFormRequest) {
+		
+		Optional<TypeOfPackage> typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.EXTRA_PACKAGE_TYPE);
+		Optional<Package> existsPackage = packageRepository.findPackageByName(packageFormRequest.getName());
+
+		MessageResponse messageResponse = validateValidPackageAndTypeOfPackage(typeOfPackage, existsPackage);
+
+		if (messageResponse.getMessage() != null)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+
+		Package newPackage = createPackage(packageFormRequest, typeOfPackage.get());
+
+		if (newPackage == null) {
+			messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_CREATED_FAILED);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+
+		messageResponse.setStatus(HttpStatus.OK.value());
+		messageResponse.setData(newPackage);
+		messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_SUCCESSFULLY);
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
 }
