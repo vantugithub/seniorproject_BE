@@ -1,14 +1,7 @@
 package project.instagram;
 
-import static org.mockito.ArgumentMatchers.anyList;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,19 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.entity.Client;
-import project.instagram.entity.DateRange;
+import project.instagram.entity.DataCrawl;
 import project.instagram.entity.Hashtag;
 import project.instagram.entity.HashtagClientManagement;
+import project.instagram.entity.HashtagRunningHistory;
 import project.instagram.entity.Package;
 import project.instagram.entity.RunningSummary;
 import project.instagram.entity.TransactionPackage;
-import project.instagram.entity.TypeOfPackage;
 import project.instagram.repository.BlackHashtagRepository;
 import project.instagram.repository.ClientRepository;
+import project.instagram.repository.DataCrawlRepository;
 import project.instagram.repository.HashtagClientManagementRepository;
 import project.instagram.repository.HashtagRepository;
+import project.instagram.repository.HashtagRunningHistoryRepository;
 import project.instagram.repository.PackageRepository;
 import project.instagram.repository.RequestRepository;
 import project.instagram.repository.RunningSummaryRepository;
@@ -75,6 +69,12 @@ class InstagramApplicationTests {
 	@Autowired
 	private TypeOfPackageRepository typeOfPackageRepository;
 
+	@Autowired
+	private HashtagRunningHistoryRepository hashtagRunningHistoryRepository;
+
+	@Autowired
+	private DataCrawlRepository dataCrawlRepository;
+
 	@Test
 	void contextLoads() {
 		UUID uuid = UUID.fromString("bf61d5ba-79c0-495a-bc73-4ac4b51c4b21");
@@ -96,7 +96,6 @@ class InstagramApplicationTests {
 //		newRequest = requestRepository.save(newRequest);
 	}
 
-
 	@Test
 	void test1() {
 		UUID packageUUID = UUID.fromString("01fd653a-630d-4294-98c4-aba211807676");
@@ -112,9 +111,6 @@ class InstagramApplicationTests {
 		System.out.println(optional.get().toString());
 
 	}
-
-
-
 
 	@Test
 	void test5() {
@@ -132,31 +128,44 @@ class InstagramApplicationTests {
 
 		System.out.println(client.toString());
 	}
-	
+
 	@Test
-	void test7( ) {
+	void test7() {
 		Date currentDate = dateTimeZoneUtils.getDateZoneGMT();
 		System.out.println(currentDate);
-		Set<HashtagClientManagement> hashtagClientManagements = hashtagClientManagementRepository.findAllByDateStartCrawlAndActiveTrue(currentDate);
-		
-		if ( hashtagClientManagements.size() == 0 ) {
+		Set<HashtagClientManagement> hashtagClientManagements = hashtagClientManagementRepository
+				.findAllByDateStartCrawlAndActiveTrue(currentDate);
+
+		if (hashtagClientManagements.size() == 0) {
 			System.out.println("none");
 		} else {
 			System.out.println(hashtagClientManagements.size());
 		}
 	}
-	
+
 	@Test
 	void test8() {
-		Client client = clientRepository.findByEmail("nguyenvantu11041999@gmail.com").get();
-		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		Optional<HashtagRunningHistory> hashtagRunningHistory = hashtagRunningHistoryRepository
+				.findById("2022-05-3005:14:51.785767_09ee87aa-9542-4e92-aa41-0e73205a34e8");
 		
-		TransactionPackage transactionPackage = transactionPackageRepository.findById(21).get();
 
-		Optional<RunningSummary> runn = runningSummaryRepository.findDetailsTransactionPackage(currentDate, client, transactionPackage);
+		System.out.println(hashtagRunningHistory.get().getRunningTime().toString());
 		
-		Package packageOfTransactionPackage = packageRepository.findById(transactionPackage.getParentPackage().getId()).get();
-		System.out.println(packageOfTransactionPackage.getName());
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(hashtagRunningHistory.get().getRunningTime());
+		calendar.add(Calendar.HOUR, 18);
+		
+		System.out.println(calendar.getTime().toString());
+		
+
+		Hashtag hashtag = hashtagRepository.getById("netflix");
+
+		List<DataCrawl> crawls = dataCrawlRepository
+				.findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(
+						calendar.getTime(), hashtag);
+		
+		System.out.println(crawls.size());
+
 	}
 
 }

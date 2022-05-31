@@ -14,10 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import project.instagram.common.enums.constants.AppConstants;
 import project.instagram.request.RequestFormRequest;
+import project.instagram.response.DataCrawlResponse;
+import project.instagram.response.HashtagClientManagementResponse;
 import project.instagram.response.HashtagRunningHistoryResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
 import project.instagram.service.ClientService;
+import project.instagram.service.DataCrawlService;
+import project.instagram.service.HashtagClientManagementService;
 import project.instagram.service.HashtagRunningHistoryService;
 
 @RestController
@@ -30,6 +34,12 @@ public class ClientController {
 
 	@Autowired
 	private HashtagRunningHistoryService hashtagRunningHistoryService;
+
+	@Autowired
+	private DataCrawlService dataCrawlService;
+	
+	@Autowired
+	private HashtagClientManagementService hashtagClientManagementService;
 
 	@GetMapping(value = "/package/current")
 	public ResponseEntity<MessageResponse> getCurrentValidPackageOfClient() throws AuthenticationException {
@@ -62,5 +72,32 @@ public class ClientController {
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		return hashtagRunningHistoryService.findAllByClientByRunningTimeDesc(page, size);
+	}
+
+	@GetMapping(value = "/data-crawls")
+	public PagedResponse<DataCrawlResponse> getAllDataCrawls(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
+			@RequestParam(name = "date", required = true) String date,
+			@RequestParam(name = "hashtag", required = true) String hashtag) {
+
+		return dataCrawlService.findAllDataCrawls(page, size, date, hashtag);
+
+	}
+
+	@GetMapping(value = "/hashtags/no-crawl")
+	public PagedResponse<HashtagClientManagementResponse> getAllHashtagNoCrawl(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return hashtagClientManagementService.findAllHashtagNoCrawl(page, size);
+	}
+
+	@GetMapping(value = "/hashtags/crawl")
+	public PagedResponse<HashtagClientManagementResponse> getAllHashtagCrawl(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return hashtagClientManagementService.findAllHashtagCrawl(page, size);
 	}
 }

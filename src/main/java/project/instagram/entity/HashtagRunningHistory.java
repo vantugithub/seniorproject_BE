@@ -139,5 +139,12 @@ public class HashtagRunningHistory implements Serializable{
 		this.hashtag = hashtag;
 		this.transactionPackage = transactionPackage;
 	}
+
+	@Override
+	public String toString() {
+		return "HashtagRunningHistory [id=" + id + ", runningTime=" + runningTime + ", crawlQuantity=" + crawlQuantity
+				+ ", type=" + type + ", status=" + status + "]";
+	}
+	
 	
 }
