@@ -7,7 +7,10 @@ import project.instagram.response.MessageResponse;
 
 public interface ClientService {
 	ResponseEntity<MessageResponse> getValidPackage();
+
 	ResponseEntity<MessageResponse> getValidExtraPackages();
+
 	ResponseEntity<MessageResponse> getDetailsValidTransactionPackage(String transactionPackageId);
+
 	ResponseEntity<MessageResponse> createRequest(RequestFormRequest requestFormRequest);
 }

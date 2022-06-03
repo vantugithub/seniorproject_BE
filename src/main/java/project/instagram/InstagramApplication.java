@@ -22,7 +22,7 @@ public class InstagramApplication {
 	@Bean
 	public TaskScheduler taskScheduler() {
 	  final ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-	  scheduler.setPoolSize(3);
+	  scheduler.setPoolSize(5);
 	  return scheduler;
 	}
 

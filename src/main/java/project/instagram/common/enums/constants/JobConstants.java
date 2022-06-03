@@ -12,4 +12,6 @@ public class JobConstants {
 	public static final String FAILED = "FAILED";
 	public static final String SUCCESS = "SUCCESS";
 	public static final String CRAWL = "CRAWL";
+	public static final String PENDING_REQUESTS = "pendingRequests";
+	public static final String PENDING_REQUESTS_QUEUE = "pendingRequestsQueue";
 }

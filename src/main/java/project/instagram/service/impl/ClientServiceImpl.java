@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import project.instagram.common.enums.RequestName;
 import project.instagram.common.enums.StatusRequestName;
 import project.instagram.common.enums.constants.AccountConstants;
+import project.instagram.common.enums.constants.JobConstants;
 import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.common.enums.constants.RequestConstants;
 import project.instagram.common.enums.constants.TransactionConstants;
@@ -68,6 +70,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private RequestRepository requestRepository;
+
+	@Autowired
+	private StringRedisTemplate redisTemplate;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -180,6 +185,10 @@ public class ClientServiceImpl implements ClientService {
 
 		return request;
 	}
+	
+	private void addHandlingRquestToRedis(Request request) {
+		redisTemplate.opsForList().leftPush(JobConstants.PENDING_REQUESTS, request.getId());
+	}
 
 	@Override
 	public ResponseEntity<MessageResponse> getValidPackage() {
@@ -287,7 +296,9 @@ public class ClientServiceImpl implements ClientService {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
-
+		
+		addHandlingRquestToRedis(request);
+		
 		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
 		messageResponse.setStatus(HttpStatus.OK.value());
 

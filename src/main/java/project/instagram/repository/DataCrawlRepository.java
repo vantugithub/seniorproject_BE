@@ -2,6 +2,7 @@ package project.instagram.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,6 @@ public interface DataCrawlRepository extends JpaRepository<DataCrawl, String> {
 
 	Page<DataCrawl> findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(Pageable pageable,
 			Date date, Hashtag hashtag);
+	
+	Optional<DataCrawl> findFirstByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(Date date, Hashtag hashtag);
 }

@@ -3,17 +3,20 @@ package project.instagram.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import project.instagram.common.enums.StatusRequestName;
+import project.instagram.common.enums.constants.JobConstants;
 import project.instagram.common.enums.constants.RequestConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.Request;
@@ -40,6 +43,9 @@ public class StaffServiceImpl implements StaffService {
 
 	@Autowired
 	private StaffRepository staffRepository;
+
+	@Autowired
+	private StringRedisTemplate redisTemplate;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -111,7 +117,7 @@ public class StaffServiceImpl implements StaffService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 		RequestResponse requestResponse = createRequestResponse(request.get());
-		
+
 		messageResponse.setStatus(HttpStatus.OK.value());
 		messageResponse.setMessage(RequestConstants.GET_REQUEST_SUCCESSFULLY);
 		messageResponse.setData(requestResponse);
@@ -120,8 +126,22 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> updateRequest() {
+	public ResponseEntity<MessageResponse> updateRequest(String requestId) {
+		redisTemplate.delete(requestId);
+		return null;
+	}
 
+	@Override
+	public ResponseEntity<RequestResponse> getPendingRequest() {
+
+		if (redisTemplate.hasKey(JobConstants.PENDING_REQUESTS)) {
+			Object consultResult = redisTemplate.opsForList().leftPop(JobConstants.PENDING_REQUESTS);	
+			
+			redisTemplate.opsForList().leftPush(consultResult.toString(), consultResult.toString());
+			
+			redisTemplate.expire(consultResult.toString(), 60, TimeUnit.SECONDS);
+		}
+		
 		return null;
 	}
 
