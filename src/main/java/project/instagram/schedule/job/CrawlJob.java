@@ -7,9 +7,11 @@
 //import java.util.Map;
 //import java.util.Set;
 //import java.util.UUID;
+//import java.util.concurrent.TimeUnit;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.redis.core.StringRedisTemplate;
+//import org.springframework.messaging.simp.SimpMessagingTemplate;
 //import org.springframework.scheduling.annotation.Scheduled;
 //import org.springframework.stereotype.Component;
 //
@@ -29,6 +31,7 @@
 //import project.instagram.repository.HashtagRepository;
 //import project.instagram.repository.HashtagRunningHistoryRepository;
 //import project.instagram.repository.TransactionPackageRepository;
+//import project.instagram.socket.config.Message;
 //import project.instagram.utils.DateTimeZoneUtils;
 //
 //@Component
@@ -37,6 +40,9 @@
 //	@Autowired
 //	private DateTimeZoneUtils dateTimeZoneUtils;
 //
+//	@Autowired
+//	private SimpMessagingTemplate simpMessagingTemplate;
+//	
 //	@Autowired
 //	private StringRedisTemplate redisTemplate;
 //
@@ -150,7 +156,7 @@
 //		hashtagRunningHistoryRepository.save(hashtagRunningHistory);
 //	}
 //
-//	@Scheduled(fixedRate = JobConstants.THREE_SECONDS)
+//	@Scheduled(fixedRate = JobConstants.ONE_HOUR)
 //	public void scheduleFixedRateTask() throws InterruptedException {
 //		System.out.println("Task - " + new Date());
 //		Set<HashtagClientManagement> hashtagClientManagements = getHashtagClientManagements();
@@ -165,27 +171,56 @@
 //		}
 //	}
 //
-//	@Scheduled(fixedRate = JobConstants.THREE_SECONDS)
+//	@Scheduled(fixedRate = JobConstants.ONE_HOUR)
 //	public void scheduleGetResultCrawlJobQueue() throws InterruptedException {
-//		Object consultResult = redisTemplate.opsForList().leftPop("resultCrawlJobQueue", Duration.ofMillis(1000));
-//		if (consultResult != null) {
-//			ObjectMapper mapper = new ObjectMapper();
-//			char quotes = '"';
-//			String result = JSON.toJSON(consultResult).toString().replaceAll("'", Character.toString(quotes));
-//			try {
+//		if (redisTemplate.hasKey("resultCrawlJobQueue")) {
+//			Object consultResult = redisTemplate.opsForList().leftPop("resultCrawlJobQueue", Duration.ofMillis(1000));
+//			if (consultResult != null) {
+//				ObjectMapper mapper = new ObjectMapper();
+//				char quotes = '"';
+//				String result = JSON.toJSON(consultResult).toString().replaceAll("'", Character.toString(quotes));
+//				try {
 //
-//				Job job = mapper.readValue(result, Job.class);
-//				System.out.println(job.toString());
-//				for (HashtagClientManagementJob hashtagClientManagementJob : job.getHashtagClientManagementJobs()) {
-//					createHashtagRunningHistory(job, hashtagClientManagementJob);
+//					Job job = mapper.readValue(result, Job.class);
+//					System.out.println(job.toString());
+//					for (HashtagClientManagementJob hashtagClientManagementJob : job.getHashtagClientManagementJobs()) {
+//						createHashtagRunningHistory(job, hashtagClientManagementJob);
+//					}
+//
+//				} catch (JsonMappingException e) {
+//					e.printStackTrace();
+//				} catch (JsonProcessingException e) {
+//					e.printStackTrace();
 //				}
-//
-//			} catch (JsonMappingException e) {
-//				e.printStackTrace();
-//			} catch (JsonProcessingException e) {
-//				e.printStackTrace();
 //			}
 //		}
+//		
 //	}
 //
+//	@Scheduled(fixedRate = JobConstants.ONE_MINUTE)
+//	public void scheduleFixedRateMessageTask() throws InterruptedException {
+//		String temp = "Task - " + new Date().toString();
+//		Message message = new Message();
+//		message.setMessage(temp);
+//		message.setTitle("Searched");
+//		simpMessagingTemplate.convertAndSendToUser("nguyenvantu11041999@gmail.com", "/private", message);
+//	}
+//
+//	@Scheduled(fixedRate = JobConstants.ONE_MINUTE)
+//	public void scheduleFixedRateFindAllPendingRequestsTask() throws InterruptedException {
+//		
+//		redisTemplate.opsForList().leftPush(JobConstants.PENDING_REQUESTS, UUID.randomUUID().toString());
+//
+//		if (redisTemplate.hasKey(JobConstants.PENDING_REQUESTS)) {
+//			Object consultResult = redisTemplate.opsForList().leftPop(JobConstants.PENDING_REQUESTS);	
+//			
+//			redisTemplate.opsForList().leftPush(consultResult.toString(), consultResult.toString());
+//			
+//			redisTemplate.expire(consultResult.toString(), 60, TimeUnit.SECONDS);
+//			
+//			redisTemplate.delete(consultResult.toString());
+//		}
+//	}
+//	
+//	
 //}

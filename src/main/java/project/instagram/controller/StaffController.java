@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class StaffController {
 
 	@Autowired
 	private StaffService staffService;
-	
+
 	@Autowired
 	private PackageService packageService;
 
@@ -53,7 +54,7 @@ public class StaffController {
 
 		return staffService.getDetailsRequest(requestId);
 	}
-	
+
 	@GetMapping(path = "/extra-packages")
 	public PagedResponse<PackageResponse> findAllExtraPackages(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
@@ -61,19 +62,31 @@ public class StaffController {
 
 		return packageService.findAllExtraPackagesForStaff(page, size);
 	}
-	
+
 	@PostMapping(value = "/extra-package/create")
 	public ResponseEntity<MessageResponse> createExtraPackage(@ModelAttribute PackageFormRequest packageFormRequest) {
-		
+
 		return packageService.createExtraPackageByStaff(packageFormRequest);
 	}
-	
-	
+
 	@GetMapping(path = "/packages")
 	public PagedResponse<PackageResponse> findAllPackages(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		return packageService.findAllPackagesForStaff(page, size);
+	}
+
+	@GetMapping(path = "/request-processing")
+	public ResponseEntity<RequestResponse> executeRequest() {
+
+		return staffService.getPendingRequest();
+	}
+
+	@PutMapping(path = "/request-processing/{requestId}")
+	public ResponseEntity<MessageResponse> updateRequest(
+			@PathVariable(name = "requestId", required = true) String requestId) {
+
+		return staffService.updateRequest(requestId);
 	}
 }

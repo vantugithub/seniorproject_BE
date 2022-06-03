@@ -147,25 +147,38 @@ class InstagramApplicationTests {
 	void test8() {
 		Optional<HashtagRunningHistory> hashtagRunningHistory = hashtagRunningHistoryRepository
 				.findById("2022-05-3005:14:51.785767_09ee87aa-9542-4e92-aa41-0e73205a34e8");
-		
 
 		System.out.println(hashtagRunningHistory.get().getRunningTime().toString());
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(hashtagRunningHistory.get().getRunningTime());
 		calendar.add(Calendar.HOUR, 18);
-		
+
 		System.out.println(calendar.getTime().toString());
-		
 
 		Hashtag hashtag = hashtagRepository.getById("netflix");
 
 		List<DataCrawl> crawls = dataCrawlRepository
-				.findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(
-						calendar.getTime(), hashtag);
-		
+				.findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(calendar.getTime(), hashtag);
+
 		System.out.println(crawls.size());
 
+	}
+
+	@Test
+	void test9() {
+		Date currentDate = dateTimeZoneUtils.getDateZoneGMT();
+
+		Hashtag hashtag = hashtagRepository.findById("netflix").get();
+
+		Optional<DataCrawl> dataCrawl = dataCrawlRepository
+				.findFirstByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(currentDate, hashtag);
+		
+		if ((currentDate.getTime() - dataCrawl.get().getCreatedDatePost().getTime()) / (60 * 60 * 1000) > 48) {
+			System.out.println("asojdaishduiasduasbdu");
+		}
+
+		System.out.println(dataCrawl.get().toString());
 	}
 
 }

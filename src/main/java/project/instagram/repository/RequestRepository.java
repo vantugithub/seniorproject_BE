@@ -1,5 +1,7 @@
 package project.instagram.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +14,5 @@ import project.instagram.entity.StatusOfRequest;
 public interface RequestRepository extends JpaRepository<Request, String> {
 	Page<Request> findAllByStatusOfRequestNotOrderByCreatedDateDesc(StatusOfRequest statusOfRequest, Pageable pageable);
 	Page<Request> findAllByStatusOfRequestOrderByCreatedDateDesc(StatusOfRequest statusOfRequest, Pageable pageable);
+	List<Request> findAllByStatusOfRequest(StatusOfRequest statusOfRequest);
 }

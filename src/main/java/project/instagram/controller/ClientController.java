@@ -37,7 +37,7 @@ public class ClientController {
 
 	@Autowired
 	private DataCrawlService dataCrawlService;
-	
+
 	@Autowired
 	private HashtagClientManagementService hashtagClientManagementService;
 
@@ -82,7 +82,6 @@ public class ClientController {
 			@RequestParam(name = "hashtag", required = true) String hashtag) {
 
 		return dataCrawlService.findAllDataCrawls(page, size, date, hashtag);
-
 	}
 
 	@GetMapping(value = "/hashtags/no-crawl")
@@ -99,5 +98,12 @@ public class ClientController {
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		return hashtagClientManagementService.findAllHashtagCrawl(page, size);
+	}
+
+	@PostMapping(value = "/search")
+	public ResponseEntity<?> searchHashtag(
+			@RequestParam(name = "hashtag", required = true) String hashtag) {
+
+		return dataCrawlService.searchHashtag(hashtag);
 	}
 }

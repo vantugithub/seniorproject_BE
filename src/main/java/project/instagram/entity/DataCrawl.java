@@ -99,4 +99,11 @@ public class DataCrawl implements Serializable{
 		this.hashtag = hashtag;
 	}
 
+	@Override
+	public String toString() {
+		return "DataCrawl [codePost=" + codePost + ", caption=" + caption + ", createdDatePost=" + createdDatePost
+				+ ", username=" + username + "]";
+	}
+
+	
 }

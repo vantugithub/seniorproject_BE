@@ -172,7 +172,7 @@ public class HashtagServiceImpl implements HashtagServive {
 		return calendar.getTime();
 	}
 
-	Boolean enableCrawlHashtagByClient(Hashtag hashtag, Date crawlDate) {
+	private Boolean enableCrawlHashtagByClient(Hashtag hashtag, Date crawlDate) {
 
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getLocalDateTime();
@@ -232,7 +232,8 @@ public class HashtagServiceImpl implements HashtagServive {
 
 			validRunningSummary.get().increaseQuantityCrawl(typeOfPackage.get(), 1);
 			runningSummaryRepository.save(validRunningSummary.get());
-			enableCrawlHashtag(hashtag, client, crawlDate, packageFromTransactionPackage.getNumberOfPostsPerHashtag(), transactionPackage);
+			enableCrawlHashtag(hashtag, client, crawlDate, packageFromTransactionPackage.getNumberOfPostsPerHashtag(),
+					transactionPackage);
 
 			return true;
 		}
@@ -254,15 +255,18 @@ public class HashtagServiceImpl implements HashtagServive {
 	private void enableCrawlHashtag(Hashtag hashtag, Client client, Date dateCrawl, short crawlQuantity,
 			TransactionPackage transactionPackage) {
 
-		HashtagClientManagement hashtagClientManagement = new HashtagClientManagement();
+		HashtagClientManagement hashtagClientManagement = hashtagClientManagementRepository
+				.findByClientManagementAndHashtagClientManagement(client, hashtag);
+
+//		HashtagClientManagement hashtagClientManagement = new HashtagClientManagement();
 		hashtagClientManagement.setActive(true);
-		hashtagClientManagement.setClientManagement(client);
-		hashtagClientManagement.setHashtagClientManagement(hashtag);
+//		hashtagClientManagement.setClientManagement(client);
+//		hashtagClientManagement.setHashtagClientManagement(hashtag);
 		hashtagClientManagement.setCrawlQuantity(crawlQuantity);
 		dateCrawl.setHours(-24);
 		hashtagClientManagement.setDateStartCrawl(dateCrawl);
 		hashtagClientManagement.setTransactionPackage(transactionPackage);
-		
+
 		hashtagClientManagementRepository.save(hashtagClientManagement);
 
 	}

@@ -1,6 +1,7 @@
 package project.instagram.repository;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -20,7 +21,7 @@ import project.instagram.entity.HashtagClientManagement;
 @Transactional
 public interface HashtagClientManagementRepository extends JpaRepository<HashtagClientManagement, Long> {
 
-	@Query(value = "SELECT h.id, h.active, h.crawl_quantity, h.date_start_crawl, h.client, h.hashtag "
+	@Query(value = "SELECT h.id, h.active, h.crawl_quantity, h.date_start_crawl, h.client, h.hashtag, h.transaction_package "
 			+ "FROM hashtag_client_managements h WHERE client = ?1 AND hashtag = ?2", nativeQuery = true)
 	public HashtagClientManagement getHashtagClientManagementByClientAndHashtag(Client client, Hashtag hashtag);
 
@@ -33,4 +34,6 @@ public interface HashtagClientManagementRepository extends JpaRepository<Hashtag
 	Page<HashtagClientManagement> findAllByClientManagementAndActiveFalse(Client client, Pageable pageable);
 	
 	Page<HashtagClientManagement> findAllByClientManagementAndActiveTrue(Client client, Pageable pageable);
+	
+	HashtagClientManagement findByClientManagementAndHashtagClientManagement(Client client, Hashtag hashtag);
 }

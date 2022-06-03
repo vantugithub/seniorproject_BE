@@ -68,6 +68,14 @@ public class RunningSummary implements Serializable {
 			this.crawledExtraPackageQuantity += (byte) crawledPackageQuantity;
 		}
 	}
+	
+	public void increaseQuantitySearch(TypeOfPackage typeOfPackage, int searchedPackageQuantity) {
+		if ( PackageConstants.PACKAGE_TYPE.equals(typeOfPackage.getName()) ) {
+			this.searchedPackageQuantity += (byte) searchedPackageQuantity;
+		} else {
+			this.searchedExtraPackageQuantity += (byte) searchedPackageQuantity;
+		}
+	}
 
 	public RunningSummary() {
 	}
