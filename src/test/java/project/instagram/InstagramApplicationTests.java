@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.DataCrawl;
 import project.instagram.entity.Hashtag;
@@ -183,11 +184,16 @@ class InstagramApplicationTests {
 	
 	@Test
 	void test10() {
-		UUID clientUUID = UUID.fromString("09ee87aa-9542-4e92-aa41-0e73205a34e8");
+		UUID clientUUID = UUID.fromString("5f19663e-c529-419d-a65b-1aab85d74da9");
 		Client client = clientRepository.findById(clientUUID).get();
 		
-		String emailClient = client.getEmail();
-		System.out.println(emailClient);
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+
+		List<TransactionPackage> transactionPackages = transactionPackageRepository
+				.findAllValidExtraTransactionPackages(PackageConstants.EXTRA_PACKAGE_TYPE, client.getId().toString(),
+						currentDate);
+		
+		System.out.println(transactionPackages.size());
 	}
 
 }

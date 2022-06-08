@@ -44,11 +44,12 @@ public interface TransactionPackageRepository extends JpaRepository<TransactionP
 	public Set<TransactionPackage> findAllValidTransactionPackages(Client client,Date currentDate);
 	
 	@Query(value = "SELECT t.id, t.expired_date, t.issued_date, t.package, t.client "
-			+ "FROM transaction_packages t WHERE t.package IN "
-			+ "(SELECT p.id FROM packages p WHERE p.type_of_package IN "
-			+ "(SELECT tp.id FROM type_of_package tp WHERE tp.name = ?1 AND t.client = ?2 )) "
-			+ "AND t.expired_date > ?3 OR t.expired_date IS NULL "
-			+ "ORDER BY t.id DESC", nativeQuery = true)
+			+ "			FROM transaction_packages t WHERE t.package IN "
+			+ "			(SELECT p.id FROM packages p WHERE p.type_of_package IN "
+			+ "			(SELECT tp.id FROM type_of_package tp WHERE tp.name = ?1 )) "
+			+ "            AND t.client = ?2 "
+			+ "			AND (t.expired_date > ?3 OR t.expired_date IS NULL ) "
+			+ "			ORDER BY t.id DESC", nativeQuery = true)
 	public List<TransactionPackage> findAllValidExtraTransactionPackages(
 			String packageType, String clientId, Date currentDate);
 	
