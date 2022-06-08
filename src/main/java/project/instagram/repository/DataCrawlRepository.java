@@ -24,4 +24,5 @@ public interface DataCrawlRepository extends JpaRepository<DataCrawl, String> {
 			Date date, Hashtag hashtag);
 	
 	Optional<DataCrawl> findFirstByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(Date date, Hashtag hashtag);
+	
 }

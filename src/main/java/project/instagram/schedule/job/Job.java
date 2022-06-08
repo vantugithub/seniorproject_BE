@@ -15,6 +15,9 @@ public class Job implements Serializable {
 	@JsonProperty("crawlQuantity")
 	private int crawlQuantity;
 	
+	@JsonProperty("typeJob")
+	private String typeJob;
+	
 	@JsonProperty("statusJob")
 	private String statusJob;
 	
@@ -73,6 +76,24 @@ public class Job implements Serializable {
 	public String toString() {
 		return "Job [hashtag=" + hashtag + ", crawlQuantity=" + crawlQuantity + ", statusJob=" + statusJob
 				+ ", hashtagClientManagementJobs=" + hashtagClientManagementJobs + "]";
+	}
+
+	public String getTypeJob() {
+		return typeJob;
+	}
+
+	public void setTypeJob(String typeJob) {
+		this.typeJob = typeJob;
+	}
+
+	public Job(String hashtag, int crawlQuantity, String typeJob, String statusJob,
+			Set<HashtagClientManagementJob> hashtagClientManagementJobs) {
+		super();
+		this.hashtag = hashtag;
+		this.crawlQuantity = crawlQuantity;
+		this.typeJob = typeJob;
+		this.statusJob = statusJob;
+		this.hashtagClientManagementJobs = hashtagClientManagementJobs;
 	}
 
 }

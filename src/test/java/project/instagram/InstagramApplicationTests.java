@@ -180,5 +180,14 @@ class InstagramApplicationTests {
 
 		System.out.println(dataCrawl.get().toString());
 	}
+	
+	@Test
+	void test10() {
+		UUID clientUUID = UUID.fromString("09ee87aa-9542-4e92-aa41-0e73205a34e8");
+		Client client = clientRepository.findById(clientUUID).get();
+		
+		String emailClient = client.getEmail();
+		System.out.println(emailClient);
+	}
 
 }

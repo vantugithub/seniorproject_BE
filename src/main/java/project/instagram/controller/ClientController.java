@@ -78,10 +78,9 @@ public class ClientController {
 	public PagedResponse<DataCrawlResponse> getAllDataCrawls(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
-			@RequestParam(name = "date", required = true) String date,
-			@RequestParam(name = "hashtag", required = true) String hashtag) {
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
 
-		return dataCrawlService.findAllDataCrawls(page, size, date, hashtag);
+		return dataCrawlService.findAllDataCrawlsByHashtagRunningHistoryId(page, size, hashtagRunningHistoryId);
 	}
 
 	@GetMapping(value = "/hashtags/no-crawl")
@@ -101,9 +100,15 @@ public class ClientController {
 	}
 
 	@PostMapping(value = "/search")
-	public ResponseEntity<?> searchHashtag(
-			@RequestParam(name = "hashtag", required = true) String hashtag) {
+	public ResponseEntity<?> searchHashtag(@RequestParam(name = "hashtag", required = true) String hashtag) {
 
 		return dataCrawlService.searchHashtag(hashtag);
+	}
+
+	@GetMapping(value = "/export/data-crawls")
+	public PagedResponse<DataCrawlResponse> exportDataCrawls(
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
+
+		return dataCrawlService.exportDataCrawls(hashtagRunningHistoryId);
 	}
 }
