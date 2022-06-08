@@ -192,7 +192,6 @@ public class CrawlJob {
 				char quotes = '"';
 				String result = JSON.toJSON(consultResult).toString().replaceAll("'", Character.toString(quotes));
 				try {
-
 					Job job = mapper.readValue(result, Job.class);
 					for (HashtagClientManagementJob hashtagClientManagementJob : job.getHashtagClientManagementJobs()) {
 						String hashtagRunningHistoryId = createHashtagRunningHistory(job, hashtagClientManagementJob,
@@ -200,7 +199,6 @@ public class CrawlJob {
 						sendNotificationForClient(job, hashtagClientManagementJob, currentDate,
 								hashtagRunningHistoryId);
 					}
-
 				} catch (JsonMappingException e) {
 					e.printStackTrace();
 				} catch (JsonProcessingException e) {

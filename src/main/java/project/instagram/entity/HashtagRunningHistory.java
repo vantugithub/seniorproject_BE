@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -36,15 +37,15 @@ public class HashtagRunningHistory implements Serializable{
 	@Column(name = "status")
 	private String status;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client", nullable = false)
 	private Client client;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "hashtag", nullable = false)
 	private Hashtag hashtag;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "transactionPackage", nullable = false)
 	private TransactionPackage transactionPackage;
 
@@ -53,7 +54,6 @@ public class HashtagRunningHistory implements Serializable{
 
 	public HashtagRunningHistory(String id, Date runningTime, String type, String status, Client client,
 			Hashtag hashtag, TransactionPackage transactionPackage) {
-		super();
 		this.id = id;
 		this.runningTime = runningTime;
 		this.type = type;
@@ -129,7 +129,6 @@ public class HashtagRunningHistory implements Serializable{
 
 	public HashtagRunningHistory(String id, Date runningTime, int crawlQuantity, String type, String status,
 			Client client, Hashtag hashtag, TransactionPackage transactionPackage) {
-		super();
 		this.id = id;
 		this.runningTime = runningTime;
 		this.crawlQuantity = crawlQuantity;

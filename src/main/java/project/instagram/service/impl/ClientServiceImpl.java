@@ -210,6 +210,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public ResponseEntity<MessageResponse> getValidExtraPackages() {
 		MessageResponse messageResponse = new MessageResponse();
+		
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 

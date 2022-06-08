@@ -10,8 +10,12 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import project.instagram.common.enums.constants.PackageConstants;
+import project.instagram.entity.Analysis;
 import project.instagram.entity.Client;
 import project.instagram.entity.DataCrawl;
 import project.instagram.entity.Hashtag;
@@ -20,6 +24,7 @@ import project.instagram.entity.HashtagRunningHistory;
 import project.instagram.entity.Package;
 import project.instagram.entity.RunningSummary;
 import project.instagram.entity.TransactionPackage;
+import project.instagram.repository.AnalysisRepository;
 import project.instagram.repository.BlackHashtagRepository;
 import project.instagram.repository.ClientRepository;
 import project.instagram.repository.DataCrawlRepository;
@@ -42,6 +47,12 @@ class InstagramApplicationTests {
 
 	@Autowired
 	private HashtagRepository hashtagRepository;
+	
+	@Autowired
+	private AnalysisRepository analysisRepository;
+
+	@Autowired
+	private HashtagRunningHistoryRepository hashtagRunningHistoryRepository;
 
 	@Autowired
 	private RunningSummaryRepository runningSummaryRepository;
@@ -69,9 +80,6 @@ class InstagramApplicationTests {
 
 	@Autowired
 	private TypeOfPackageRepository typeOfPackageRepository;
-
-	@Autowired
-	private HashtagRunningHistoryRepository hashtagRunningHistoryRepository;
 
 	@Autowired
 	private DataCrawlRepository dataCrawlRepository;
@@ -174,26 +182,48 @@ class InstagramApplicationTests {
 
 		Optional<DataCrawl> dataCrawl = dataCrawlRepository
 				.findFirstByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(currentDate, hashtag);
-		
+
 		if ((currentDate.getTime() - dataCrawl.get().getCreatedDatePost().getTime()) / (60 * 60 * 1000) > 48) {
 			System.out.println("asojdaishduiasduasbdu");
 		}
 
 		System.out.println(dataCrawl.get().toString());
 	}
-	
+
 	@Test
 	void test10() {
 		UUID clientUUID = UUID.fromString("5f19663e-c529-419d-a65b-1aab85d74da9");
 		Client client = clientRepository.findById(clientUUID).get();
-		
+
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 
 		List<TransactionPackage> transactionPackages = transactionPackageRepository
 				.findAllValidExtraTransactionPackages(PackageConstants.EXTRA_PACKAGE_TYPE, client.getId().toString(),
 						currentDate);
-		
+
 		System.out.println(transactionPackages.size());
+	}
+
+	@Test
+	void test11() {
+		HashtagRunningHistory hashtagRunningHistory = hashtagRunningHistoryRepository
+				.findById("2022-06-0610:14:05.5919186_09ee87aa-9542-4e92-aa41-0e73205a34e8").get();
+		
+		System.out.println(hashtagRunningHistory.getRunningTime().toGMTString());
+		System.out.println(hashtagRunningHistory.getRunningTime().toLocaleString());
+		System.out.println(hashtagRunningHistory.getRunningTime().toString());
+	}
+	
+	@Test
+	void test12() {
+		Pageable pageable = PageRequest.of(0, 30);
+
+		Hashtag hashtag = hashtagRepository.getById("food");
+
+		Page<Analysis> dataCrawls = analysisRepository
+				.findAllByHashtagAndDateOfAnalysisOrderByIdDesc(hashtag, "2022-06-06", pageable);
+		
+		System.out.println(dataCrawls.getContent().get(0).toString());
 	}
 
 }

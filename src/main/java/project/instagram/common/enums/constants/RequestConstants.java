@@ -10,4 +10,6 @@ public class RequestConstants {
 	public static final String REQUEST_SUCCESS = "Request success";
 	
 	public static final String GET_REQUEST_SUCCESSFULLY = "get request successfully";
+	
+	public static final String HASHTAG_RUNNING_HISTORY_ID_IS_NOT_EXISTS = "Hashtag running history id is not exists";
 }

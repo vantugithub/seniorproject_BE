@@ -19,6 +19,7 @@ import project.instagram.response.HashtagClientManagementResponse;
 import project.instagram.response.HashtagRunningHistoryResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.service.AnalysisService;
 import project.instagram.service.ClientService;
 import project.instagram.service.DataCrawlService;
 import project.instagram.service.HashtagClientManagementService;
@@ -37,6 +38,9 @@ public class ClientController {
 
 	@Autowired
 	private DataCrawlService dataCrawlService;
+
+	@Autowired
+	private AnalysisService analysisService;
 
 	@Autowired
 	private HashtagClientManagementService hashtagClientManagementService;
@@ -111,4 +115,12 @@ public class ClientController {
 
 		return dataCrawlService.exportDataCrawls(hashtagRunningHistoryId);
 	}
+
+	@GetMapping(value = "/analysis/data-crawls")
+	public ResponseEntity<MessageResponse> analysisDataCrawls(
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
+
+		return analysisService.getAnalysisByDateAndClient(hashtagRunningHistoryId);
+	}
+
 }

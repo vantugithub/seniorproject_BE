@@ -46,6 +46,6 @@ public class PackageConstants {
 	
 	public static final String GET_SUCCESS = "Get successfully";
 	
-	public static final String FREE_PACKAGE = "Free package";
+	public static final String FREE_PACKAGE = "Free";
 	
 }
