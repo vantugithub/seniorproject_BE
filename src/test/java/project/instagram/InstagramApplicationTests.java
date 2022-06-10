@@ -10,9 +10,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.entity.Analysis;
@@ -216,14 +213,10 @@ class InstagramApplicationTests {
 	
 	@Test
 	void test12() {
-		Pageable pageable = PageRequest.of(0, 30);
-
-		Hashtag hashtag = hashtagRepository.getById("food");
-
-		Page<Analysis> dataCrawls = analysisRepository
-				.findAllByHashtagAndDateOfAnalysisOrderByIdDesc(hashtag, "2022-06-06", pageable);
+		Hashtag hashtag = hashtagRepository.findById("food").get();
+		Date startDate = dateTimeZoneUtils.formatDateTime("2022-06-06");
+		Date endDate = dateTimeZoneUtils.formatDateTime("2022-06-09");
 		
-		System.out.println(dataCrawls.getContent().get(0).toString());
 	}
 
 }

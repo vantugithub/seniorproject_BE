@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,7 @@ import project.instagram.request.RequestFormRequest;
 import project.instagram.response.DetailsTransactionPackageResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
+import project.instagram.response.PagedResponse;
 import project.instagram.response.RemainingQuantityResponse;
 import project.instagram.response.RunningSummaryResponse;
 import project.instagram.response.TransactionPackageResponse;
@@ -185,7 +189,7 @@ public class ClientServiceImpl implements ClientService {
 
 		return request;
 	}
-	
+
 	private void addHandlingRquestToRedis(Request request) {
 		redisTemplate.opsForList().leftPush(JobConstants.PENDING_REQUESTS, request.getId());
 	}
@@ -210,7 +214,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public ResponseEntity<MessageResponse> getValidExtraPackages() {
 		MessageResponse messageResponse = new MessageResponse();
-		
+
 		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 
@@ -297,13 +301,53 @@ public class ClientServiceImpl implements ClientService {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
-		
+
 		addHandlingRquestToRedis(request);
-		
+
 		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
 		messageResponse.setStatus(HttpStatus.OK.value());
 
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public PagedResponse<TransactionPackageResponse> findAllTransactionPackage(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size);
+
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+
+		Page<TransactionPackage> transactionPackages = transactionPackageRepository
+				.findAllByClientOrderByIssuedeDateDesc(pageable, client);
+
+		List<TransactionPackageResponse> transactionPackageResponses = new ArrayList<TransactionPackageResponse>(
+				transactionPackages.getContent().size());
+
+		for (TransactionPackage transactionPackage : transactionPackages.getContent()) {
+			transactionPackageResponses.add(createTransactionPackageResponse(transactionPackage));
+		}
+
+		return new PagedResponse<>(transactionPackageResponses, transactionPackages.getNumber(),
+				transactionPackages.getSize(), transactionPackages.getTotalElements(),
+				transactionPackages.getTotalPages(), transactionPackages.isLast());
+	}
+
+	private TransactionPackageResponse createTransactionPackageResponse(TransactionPackage transactionPackage) {
+		TransactionPackageResponse transactionPackageResponse = new TransactionPackageResponse();
+		transactionPackageResponse.setId(transactionPackage.getId());
+		transactionPackageResponse.setExpiredDate(transactionPackage.getExpiredDate());
+		transactionPackageResponse.setIssuedeDate(transactionPackage.getIssuedeDate());
+
+		Package package1 = packageRepository.findById(transactionPackage.getParentPackage().getId()).get();
+
+		PackageResponse packageResponse = new PackageResponse();
+		packageResponse.setId(package1.getId().toString());
+		packageResponse.setPrice(package1.getPrice());
+		packageResponse.setName(package1.getName());
+
+		transactionPackageResponse.setValidPackage(packageResponse);
+
+		return transactionPackageResponse;
 	}
 
 }

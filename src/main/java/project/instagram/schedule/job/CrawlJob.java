@@ -230,7 +230,7 @@ public class CrawlJob {
 //		
 //		message.setObject(hashtagRunningHistoryResponse);
 //
-//		simpMessagingTemplate.convertAndSendToUser("nguyenvantu11041999@gmail.com", "/private", message);
+//		simpMessagingTemplate.convertAndSendToUser("nguyenvantu110419@gmail.com", "/private", message);
 //	}
 
 	private void sendNotificationForClient(Job job, HashtagClientManagementJob hashtagClientManagementJob,

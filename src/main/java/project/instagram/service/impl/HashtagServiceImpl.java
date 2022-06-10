@@ -251,7 +251,6 @@ public class HashtagServiceImpl implements HashtagServive {
 		return (byte) (quantityCrawlOfPackage - runningSummary.getCrawledExtraPackageQuantity());
 	}
 
-	@SuppressWarnings("deprecation")
 	private void enableCrawlHashtag(Hashtag hashtag, Client client, Date dateCrawl, short crawlQuantity,
 			TransactionPackage transactionPackage) {
 
@@ -263,7 +262,7 @@ public class HashtagServiceImpl implements HashtagServive {
 //		hashtagClientManagement.setClientManagement(client);
 //		hashtagClientManagement.setHashtagClientManagement(hashtag);
 		hashtagClientManagement.setCrawlQuantity(crawlQuantity);
-		dateCrawl.setHours(-24);
+//		dateCrawl.setHours(-16);
 		hashtagClientManagement.setDateStartCrawl(dateCrawl);
 		hashtagClientManagement.setTransactionPackage(transactionPackage);
 

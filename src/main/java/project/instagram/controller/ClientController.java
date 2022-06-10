@@ -19,6 +19,7 @@ import project.instagram.response.HashtagClientManagementResponse;
 import project.instagram.response.HashtagRunningHistoryResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.response.TransactionPackageResponse;
 import project.instagram.service.AnalysisService;
 import project.instagram.service.ClientService;
 import project.instagram.service.DataCrawlService;
@@ -121,6 +122,31 @@ public class ClientController {
 			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
 
 		return analysisService.getAnalysisByDateAndClient(hashtagRunningHistoryId);
+	}
+
+	@GetMapping(value = "/transaction-packages")
+	public PagedResponse<TransactionPackageResponse> getAllTransactionPackage(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllTransactionPackage(page, size);
+	}
+
+	@GetMapping(value = "/hashtag-running/{hashtag}")
+	public PagedResponse<HashtagRunningHistoryResponse> getHashtagRunningHistories(
+			@PathVariable(name = "hashtag", required = true) String hashtag,
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return hashtagRunningHistoryService.findAllByClientAndHashtag(page, size, hashtag);
+	}
+
+	@GetMapping(value = "/analysis")
+	public ResponseEntity<MessageResponse> analysis(@RequestParam(name = "hashtag", required = true) String hashtagStr,
+			@RequestParam(name = "startDate", required = true) String startDate,
+			@RequestParam(name = "endDate", required = true) String endDate) {
+
+		return analysisService.getAnalysisHashtagByPeriodOfTime(hashtagStr, startDate, endDate);
 	}
 
 }

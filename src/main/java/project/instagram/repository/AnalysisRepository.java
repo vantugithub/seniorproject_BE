@@ -11,4 +11,5 @@ import project.instagram.entity.Hashtag;
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 	Page<Analysis> findAllByHashtagAndDateOfAnalysisOrderByIdDesc(Hashtag hashtag, String date, Pageable pageable);
+
 }
