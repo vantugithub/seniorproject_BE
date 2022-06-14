@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import project.instagram.entity.Client;
+import project.instagram.entity.Package;
 import project.instagram.entity.TransactionPackage;
 
 @Repository
@@ -43,5 +44,13 @@ public interface TransactionPackageRepository extends JpaRepository<TransactionP
 			Date currentDate);
 
 	Page<TransactionPackage> findAllByClientOrderByIssuedeDateDesc(Pageable pageable, Client client);
+
+	@Query(value = "select t.id, t.issued_date, t.client, t.package, t.expired_date from transaction_packages t where "
+			+ "t.package = ?1 and t.issued_date >= ?2 and t.issued_date < ?3", nativeQuery = true)
+	List<TransactionPackage> findAllByPackageAndPeriodOfTime(Package pac, Date startDate, Date endDate);
+	
+	@Query(value = "select t.id, t.issued_date, t.client, t.package, t.expired_date from transaction_packages t where "
+			+ "t.issued_date >= ?1 and t.issued_date < ?2", nativeQuery = true)
+	List<TransactionPackage> findAllByPeriodOfTime(Date startDate, Date endDate);
 
 }

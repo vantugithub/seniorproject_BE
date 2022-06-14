@@ -22,51 +22,49 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "packages")
-public class Package implements Serializable{
-	
+public class Package implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "VARCHAR(40)")
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(name = "id", columnDefinition = "VARCHAR(40)")
 	@Type(type = "uuid-char")
 	@NotNull
 	private UUID id;
-	
+
 	@Column(name = "name", length = 50)
 	private String name;
-	
+
 	@Column(name = "crawlQuantity")
 	private byte crawlQuantity;
-	
+
 	@Column(name = "searchQuantity")
 	private byte searchQuantity;
-	
+
 	@Column(name = "numberOfPostsInEachSearch")
 	private short numberOfPostInEachSearch;
-	
+
 	@Column(name = "numberOfPostsPerHashtag")
 	private short numberOfPostsPerHashtag;
-	
+
 	@Column(name = "price")
 	private double price;
-	
+
 	@Column(name = "numberOfMonths", nullable = true)
 	private byte numberOfMonths;
-	
+
 	@Column(name = "active")
 	private boolean active;
-	
+
 	@OneToMany(mappedBy = "parentPackage", fetch = FetchType.LAZY)
 	private Set<TransactionPackage> transactionPackages;
-	
-	@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+
+	@JsonIgnoreProperties(value = { "applications", "hibernateLazyInitializer" })
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeOfPackage")
 	private TypeOfPackage typeOfPackage;
-	
-	
 
 	public Package(@NotNull UUID id, String name, byte crawlQuantity, byte searchQuantity,
 			short numberOfPostInEachSearch, short numberOfPostsPerHashtag, double price, byte numberOfMonths,
@@ -198,9 +196,8 @@ public class Package implements Serializable{
 	public String toString() {
 		return "Package [id=" + id + ", name=" + name + ", crawlQuantity=" + crawlQuantity + ", searchQuantity="
 				+ searchQuantity + ", numberOfPostInEachSearch=" + numberOfPostInEachSearch
-				+ ", numberOfPostsPerHashtag=" + numberOfPostsPerHashtag + ", price=" + price + ", numberOfMonth="
-				+ numberOfMonths + ", active=" + active + ", transactionPackages=" + transactionPackages
-				+ ", typeOfPackage=" + typeOfPackage + "]";
+				+ ", numberOfPostsPerHashtag=" + numberOfPostsPerHashtag + ", price=" + price + ", numberOfMonths="
+				+ numberOfMonths + ", active=" + active + "]";
 	}
 
 }

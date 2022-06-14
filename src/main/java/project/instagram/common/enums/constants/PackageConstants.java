@@ -48,4 +48,8 @@ public class PackageConstants {
 	
 	public static final String FREE_PACKAGE = "Free";
 	
+	public static final String PREMIUM_PACKAGE = "Premium";
+	
+	public static final String STANDARD_PACKAGE = "Standard";
+	
 }

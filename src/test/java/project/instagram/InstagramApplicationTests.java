@@ -1,8 +1,11 @@
 package project.instagram;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +24,7 @@ import project.instagram.entity.HashtagRunningHistory;
 import project.instagram.entity.Package;
 import project.instagram.entity.RunningSummary;
 import project.instagram.entity.TransactionPackage;
+import project.instagram.entity.TypeOfPackage;
 import project.instagram.repository.AnalysisRepository;
 import project.instagram.repository.BlackHashtagRepository;
 import project.instagram.repository.ClientRepository;
@@ -42,9 +46,11 @@ class InstagramApplicationTests {
 
 	private static final String EXTRA_PACKAGE_TYPE = "Extra package";
 
+	private static final int HashMap = 0;
+
 	@Autowired
 	private HashtagRepository hashtagRepository;
-	
+
 	@Autowired
 	private AnalysisRepository analysisRepository;
 
@@ -205,18 +211,53 @@ class InstagramApplicationTests {
 	void test11() {
 		HashtagRunningHistory hashtagRunningHistory = hashtagRunningHistoryRepository
 				.findById("2022-06-0610:14:05.5919186_09ee87aa-9542-4e92-aa41-0e73205a34e8").get();
-		
+
 		System.out.println(hashtagRunningHistory.getRunningTime().toGMTString());
 		System.out.println(hashtagRunningHistory.getRunningTime().toLocaleString());
 		System.out.println(hashtagRunningHistory.getRunningTime().toString());
 	}
-	
+
 	@Test
 	void test12() {
-		Hashtag hashtag = hashtagRepository.findById("food").get();
-		Date startDate = dateTimeZoneUtils.formatDateTime("2022-06-06");
-		Date endDate = dateTimeZoneUtils.formatDateTime("2022-06-09");
 		
+		String startYear = "2022";
+		String startDateTimeStr = startYear + "-01-01";
+
+		String endDateTimeStr = String.valueOf(Integer.parseInt(startYear) + (Integer) 1) + "-01-01";
+
+		Date startDate = dateTimeZoneUtils.formatDateTime(startDateTimeStr);
+		Date endDate = dateTimeZoneUtils.formatDateTime(endDateTimeStr);
+
+		TypeOfPackage typeOfPackage = typeOfPackageRepository.findByName(PACKAGE_TYPE).get();
+
+		List<Package> packages = packageRepository.findAllByTypeOfPackage(typeOfPackage);
+
+		List<HashMap<String, Integer>> counters = new ArrayList<HashMap<String, Integer>>();
+
+		for (Package pac : packages) {
+			List<TransactionPackage> transactionPackages = transactionPackageRepository
+					.findAllByPackageAndPeriodOfTime(pac, startDate, endDate);
+			HashMap<String, Integer> counter = new HashMap<String, Integer>();
+			for (TransactionPackage transactionPackage : transactionPackages) {
+
+				String monthStr = transactionPackage.getIssuedeDate().toString().split("-")[1];
+
+				if (counter.containsKey(monthStr)) {
+					counter.put(monthStr, counter.get(monthStr) + 1);
+				} else {
+					counter.put(monthStr, 1);
+				}
+				
+			}
+			counters.add(counter);
+		}
+		
+		for (int i = 0 ; i < counters.size(); i++) {
+			HashMap<String, Integer> counter = counters.get(i);
+			Set<Map.Entry<String, Integer>> mappingGeeks = counter.entrySet();
+	        System.out.println("Set of Keys and Values : "+mappingGeeks);
+		}
+
 	}
 
 }
