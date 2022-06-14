@@ -26,6 +26,7 @@ import project.instagram.entity.Client;
 import project.instagram.entity.Package;
 import project.instagram.entity.Request;
 import project.instagram.entity.RunningSummary;
+import project.instagram.entity.Staff;
 import project.instagram.entity.StatusOfRequest;
 import project.instagram.entity.TransactionPackage;
 import project.instagram.entity.TypeOfPackage;
@@ -34,15 +35,19 @@ import project.instagram.repository.ClientRepository;
 import project.instagram.repository.PackageRepository;
 import project.instagram.repository.RequestRepository;
 import project.instagram.repository.RunningSummaryRepository;
+import project.instagram.repository.StaffRepository;
 import project.instagram.repository.TransactionPackageRepository;
 import project.instagram.repository.TypeOfPackageRepository;
 import project.instagram.request.RequestFormRequest;
+import project.instagram.response.ClientResponse;
 import project.instagram.response.DetailsTransactionPackageResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
 import project.instagram.response.PagedResponse;
 import project.instagram.response.RemainingQuantityResponse;
+import project.instagram.response.RequestResponse;
 import project.instagram.response.RunningSummaryResponse;
+import project.instagram.response.StaffResponse;
 import project.instagram.response.TransactionPackageResponse;
 import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.ClientService;
@@ -80,6 +85,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private ModelMapper mapper;
+
+	@Autowired
+	private StaffRepository staffRepository;
 
 	TransactionPackageResponse checkExistsPackageOfClient(Optional<TransactionPackage> transactionPackage) {
 		if (transactionPackage.isEmpty()) {
@@ -348,6 +356,64 @@ public class ClientServiceImpl implements ClientService {
 		transactionPackageResponse.setValidPackage(packageResponse);
 
 		return transactionPackageResponse;
+	}
+
+	private RequestResponse createRequestResponse(Request request) {
+		RequestResponse requestResponse = mapper.map(request, RequestResponse.class);
+		requestResponse.setRequestId(request.getId().toString());
+		requestResponse.setStatusOfRequest(request.getStatusOfRequest().getName().toString());
+		requestResponse.setTypeOfRequest(request.getTypeOfRequest().getName().toString());
+
+		if (request.getStaff() == null) {
+			requestResponse.setUpdatedBy(null);
+		} else {
+			Staff updatedByStaff = staffRepository.getById(request.getStaff().getId());
+			requestResponse
+					.setUpdatedBy(new StaffResponse(updatedByStaff.getId().toString(), updatedByStaff.getEmail()));
+		}
+
+		Client requestCreator = clientRepository.getById(request.getClientRequest().getId());
+		requestResponse
+				.setRequestCreator(new ClientResponse(requestCreator.getId().toString(), requestCreator.getEmail()));
+
+		return requestResponse;
+	}
+
+	@Override
+	public PagedResponse<RequestResponse> findAllNotPendingRequests(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		StatusOfRequest statusOfRequest = new StatusOfRequest(StatusRequestName.PENDING);
+		Page<Request> requests = requestRepository
+				.findAllByClientRequestAndStatusOfRequestNotOrderByCreatedDateDesc(client, statusOfRequest, pageable);
+
+		List<RequestResponse> requestResponses = new ArrayList<RequestResponse>(requests.getContent().size());
+
+		for (Request request : requests.getContent()) {
+			requestResponses.add(createRequestResponse(request));
+		}
+
+		return new PagedResponse<>(requestResponses, requests.getNumber(), requests.getSize(),
+				requests.getTotalElements(), requests.getTotalPages(), requests.isLast());
+	}
+
+	@Override
+	public PagedResponse<RequestResponse> findAllPendingRequests(int page, int size) {
+
+		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		Pageable pageable = PageRequest.of(page, size);
+		StatusOfRequest statusOfRequest = new StatusOfRequest(StatusRequestName.PENDING);
+		Page<Request> requests = requestRepository
+				.findAllByClientRequestAndStatusOfRequestOrderByCreatedDateDesc(client, statusOfRequest, pageable);
+
+		List<RequestResponse> requestResponses = new ArrayList<RequestResponse>(requests.getContent().size());
+
+		for (Request request : requests.getContent()) {
+			requestResponses.add(createRequestResponse(request));
+		}
+
+		return new PagedResponse<>(requestResponses, requests.getNumber(), requests.getSize(),
+				requests.getTotalElements(), requests.getTotalPages(), requests.isLast());
 	}
 
 }

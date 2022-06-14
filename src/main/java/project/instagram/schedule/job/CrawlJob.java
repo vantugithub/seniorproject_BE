@@ -167,7 +167,7 @@ public class CrawlJob {
 		return hashtagRunningHistory.getId();
 	}
 
-	@Scheduled(fixedRate = JobConstants.ONE_HOUR)
+	@Scheduled(fixedRate = JobConstants.ONE_MINUTE)
 	public void scheduleFixedRateTask() throws InterruptedException {
 		System.out.println("Task - " + new Date());
 
@@ -262,7 +262,7 @@ public class CrawlJob {
 		Client client = clientRepository.findById(clientUUID).get();
 
 		String emailClient = client.getEmail();
-
+		System.out.println(emailClient);
 		simpMessagingTemplate.convertAndSendToUser(emailClient, "/private", message);
 
 	}

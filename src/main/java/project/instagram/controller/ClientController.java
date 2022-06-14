@@ -19,6 +19,7 @@ import project.instagram.response.HashtagClientManagementResponse;
 import project.instagram.response.HashtagRunningHistoryResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.response.RequestResponse;
 import project.instagram.response.TransactionPackageResponse;
 import project.instagram.service.AnalysisService;
 import project.instagram.service.ClientService;
@@ -133,7 +134,7 @@ public class ClientController {
 	}
 
 	@GetMapping(value = "/hashtag-running/{hashtag}")
-	public PagedResponse<HashtagRunningHistoryResponse> getHashtagRunningHistories(
+	public PagedResponse<HashtagRunningHistoryResponse> getAllHashtagRunningHistories(
 			@PathVariable(name = "hashtag", required = true) String hashtag,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
@@ -148,5 +149,22 @@ public class ClientController {
 
 		return analysisService.getAnalysisHashtagByPeriodOfTime(hashtagStr, startDate, endDate);
 	}
+	
+	@GetMapping(value = "/pending-requests/histories")
+	public PagedResponse<RequestResponse> getAllPendingRequestHistories(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllPendingRequests(page, size);
+	}
+	
+	@GetMapping(value = "/not-pending-requests/histories")
+	public PagedResponse<RequestResponse> getAllNotPendingRequestHistories(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllNotPendingRequests(page, size);
+	}
+	
 
 }

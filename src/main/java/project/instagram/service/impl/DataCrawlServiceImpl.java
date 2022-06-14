@@ -53,7 +53,6 @@ import project.instagram.repository.TypeOfPackageRepository;
 import project.instagram.response.DataCrawlResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
-import project.instagram.response.ParameterCrawlDataPageResponse;
 import project.instagram.schedule.job.HashtagClientManagementJob;
 import project.instagram.schedule.job.Job;
 import project.instagram.security.SecurityAuditorAware;
@@ -219,7 +218,6 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 
 		if (EXTRA_PACKAGE_TYPE.equals(typeOfPackage.get().getName())) {
 			runningSummary.setSearchedExtraPackageQuantity((byte) 1);
-			;
 		}
 
 		return runningSummary;
@@ -387,7 +385,7 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
 
-		Date currentDate = dateTimeZoneUtils.getDateZoneGMT();
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 
 		Hashtag hashtag = hashtagRepository.findById(hashtagName).get();
 
@@ -404,20 +402,23 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 		}
 
 		if ((currentDate.getTime() - dataCrawl.get().getCreatedDatePost().getTime()) / (60 * 60 * 1000) <= 48) {
-			createHashtagRunningHistory(currentDate, client, transactionPackageId, hashtag);
+			System.out.println(currentDate.toString());
+			HashtagRunningHistory hashtagRunningHistory = createHashtagRunningHistory(currentDate, client,
+					transactionPackageId, hashtag);
 
 			messageResponse.setMessage(Validation.DATA_IS_EXISTS);
 			messageResponse.setStatus(HttpStatus.OK.value());
-			StringBuilder urlForward = new StringBuilder(URL + "api/client/data-crawls");
+			StringBuilder urlForward = new StringBuilder(
+					URL + "api/client/data-crawls/?page=0&size=15&hashtagRunningHistoryId="+hashtagRunningHistory.getId());
+//
+//			ParameterCrawlDataPageResponse parameterCrawlDataPageResponse = new ParameterCrawlDataPageResponse();
+//			parameterCrawlDataPageResponse.setPage(1);
+//			parameterCrawlDataPageResponse.setSize(15);
+//			parameterCrawlDataPageResponse.setDate(currentDate.toString());
+//			parameterCrawlDataPageResponse.setUrl(urlForward.toString());
+//			parameterCrawlDataPageResponse.setHashtag(hashtagName);
 
-			ParameterCrawlDataPageResponse parameterCrawlDataPageResponse = new ParameterCrawlDataPageResponse();
-			parameterCrawlDataPageResponse.setPage(1);
-			parameterCrawlDataPageResponse.setSize(15);
-			parameterCrawlDataPageResponse.setDate(currentDate.toString());
-			parameterCrawlDataPageResponse.setUrl(urlForward.toString());
-			parameterCrawlDataPageResponse.setHashtag(hashtagName);
-
-			messageResponse.setData(parameterCrawlDataPageResponse);
+			messageResponse.setData(urlForward);
 
 			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
@@ -430,12 +431,13 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 
-	private void createHashtagRunningHistory(Date currentDate, Client client, int transactionPackageId,
+	private HashtagRunningHistory createHashtagRunningHistory(Date currentDate, Client client, int transactionPackageId,
 			Hashtag hashtag) {
 		StringBuilder hashtagRunningHistoryId = new StringBuilder(
 				currentDate.toString().replace(" ", "") + "_" + client.getId().toString());
 
 		TransactionPackage transactionPackage = transactionPackageRepository.getById(transactionPackageId);
+		
 		Package packageOfClient = packageRepository.getById(transactionPackage.getParentPackage().getId());
 
 		HashtagRunningHistory hashtagRunningHistory = new HashtagRunningHistory();
@@ -450,6 +452,8 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 		hashtagRunningHistory.setHashtag(hashtag);
 
 		hashtagRunningHistoryRepository.save(hashtagRunningHistory);
+
+		return hashtagRunningHistory;
 	}
 
 	@Override
