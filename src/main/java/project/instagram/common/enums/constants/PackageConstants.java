@@ -36,6 +36,8 @@ public class PackageConstants {
 	
 	public static final String PURCHASED_THE_EXTRA_PACKAGE_SUCCESSFULLY = "Purchased the extra package Successfully";
 	
+	public static final String PURCHASED_THE_EXTRA_PACKAGE_FAILED = "Purchased the extra package failed";
+	
 	public static final String UPGRADE_PACKAGE_FAILED = "Upgrade package failed";
 	
 	public static final String PACKAGE_TYPE = "Package";

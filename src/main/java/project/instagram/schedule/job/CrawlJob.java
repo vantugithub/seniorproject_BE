@@ -167,7 +167,7 @@ public class CrawlJob {
 		return hashtagRunningHistory.getId();
 	}
 
-	@Scheduled(fixedRate = JobConstants.ONE_MINUTE)
+	@Scheduled(fixedRate = JobConstants.ONE_HOUR)
 	public void scheduleFixedRateTask() throws InterruptedException {
 		System.out.println("Task - " + new Date());
 

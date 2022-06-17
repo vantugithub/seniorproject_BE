@@ -22,4 +22,6 @@ public interface ClientService {
 	PagedResponse<RequestResponse> findAllNotPendingRequests(int page, int size);
 
 	PagedResponse<RequestResponse> findAllPendingRequests(int page, int size);
+	
+	ResponseEntity<MessageResponse> verifiRequest(String token);
 }

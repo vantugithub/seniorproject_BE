@@ -149,7 +149,7 @@ public class ClientController {
 
 		return analysisService.getAnalysisHashtagByPeriodOfTime(hashtagStr, startDate, endDate);
 	}
-	
+
 	@GetMapping(value = "/pending-requests/histories")
 	public PagedResponse<RequestResponse> getAllPendingRequestHistories(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
@@ -157,7 +157,7 @@ public class ClientController {
 
 		return clientService.findAllPendingRequests(page, size);
 	}
-	
+
 	@GetMapping(value = "/not-pending-requests/histories")
 	public PagedResponse<RequestResponse> getAllNotPendingRequestHistories(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
@@ -165,6 +165,5 @@ public class ClientController {
 
 		return clientService.findAllNotPendingRequests(page, size);
 	}
-	
 
 }
