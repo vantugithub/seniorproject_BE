@@ -70,6 +70,25 @@ public class PackageServiceImpl implements PackageService {
 		return newPackageResponse;
 	}
 
+	private boolean canCreateExtraPackage(PackageFormRequest extraPackage, Optional<TypeOfPackage> typeOfPackage) {
+
+		List<Package> extraPackages = packageRepository.findAllByTypeOfPackage(typeOfPackage.get());
+		for (Package pa : extraPackages) {
+			if ((pa.getName().equals(extraPackage.getName()))
+					|| (pa.getNumberOfMonths() == extraPackage.getNumberOfMonths()
+							&& pa.getNumberOfPostInEachSearch() == extraPackage.getNumberOfPostInEachSearch()
+							&& pa.getNumberOfPostsPerHashtag() == extraPackage.getNumberOfPostsPerHashtag()
+							&& pa.getPrice() == extraPackage.getPrice()
+							&& pa.getSearchQuantity() == extraPackage.getSearchQuantity()
+							&& pa.getCrawlQuantity() == extraPackage.getCrawlQuantity())) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	public ResponseEntity<MessageResponse> createPackage(PackageFormRequest packageFormRequest) {
 		UUID packageId = UUID.fromString(packageFormRequest.getTypeOfPackageId());
@@ -78,13 +97,14 @@ public class PackageServiceImpl implements PackageService {
 
 		MessageResponse messageResponse = validateValidPackageAndTypeOfPackage(typeOfPackage, existsPackage);
 
-		if (messageResponse.getMessage() != null)
+		if (messageResponse.getMessage() != null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
 
 		Package newPackage = createPackage(packageFormRequest, typeOfPackage.get());
 
 		if (newPackage == null) {
-			messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_CREATED_FAILED);
+			messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_FAILED);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
@@ -213,11 +233,18 @@ public class PackageServiceImpl implements PackageService {
 
 	@Override
 	public ResponseEntity<MessageResponse> createExtraPackageByStaff(PackageFormRequest packageFormRequest) {
-		
+
 		Optional<TypeOfPackage> typeOfPackage = typeOfPackageRepository.findByName(PackageConstants.EXTRA_PACKAGE_TYPE);
 		Optional<Package> existsPackage = packageRepository.findPackageByName(packageFormRequest.getName());
 
 		MessageResponse messageResponse = validateValidPackageAndTypeOfPackage(typeOfPackage, existsPackage);
+		
+		if (!canCreateExtraPackage(packageFormRequest, typeOfPackage)) {
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			messageResponse.setMessage(PackageConstants.CREATED_EXTRA_PACKAGE_FAILED);
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
 
 		if (messageResponse.getMessage() != null)
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
@@ -225,7 +252,7 @@ public class PackageServiceImpl implements PackageService {
 		Package newPackage = createPackage(packageFormRequest, typeOfPackage.get());
 
 		if (newPackage == null) {
-			messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_CREATED_FAILED);
+			messageResponse.setMessage(PackageConstants.CREATED_PACKAGE_FAILED);
 			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);

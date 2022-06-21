@@ -69,7 +69,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private DateTimeZoneUtils dateTimeZoneUtils;
-	
+
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -307,7 +307,8 @@ public class ClientServiceImpl implements ClientService {
 
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
-	
+
+	@SuppressWarnings("unused")
 	private void sendNotificationForClient(Job job, HashtagClientManagementJob hashtagClientManagementJob,
 			Date currentDate, String hashtagRunningHistoryId) {
 
@@ -342,6 +343,14 @@ public class ClientServiceImpl implements ClientService {
 
 	}
 
+	private void sendNotificationToStaff() {
+		Message message = new Message();
+		message.setMessage("There is a new request pending");
+		message.setTitle("New request pending");
+		simpMessagingTemplate.convertAndSend("/newrequest/public", message);
+		System.out.println("concacccccccccccccccccccc");
+	}
+
 	@Override
 	public ResponseEntity<MessageResponse> createRequest(RequestFormRequest requestFormRequest) {
 		MessageResponse messageResponse = new MessageResponse();
@@ -356,6 +365,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 
 		addHandlingRquestToRedis(request);
+		sendNotificationToStaff();
 
 		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
 		messageResponse.setStatus(HttpStatus.OK.value());

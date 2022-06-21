@@ -7,4 +7,5 @@ public interface HashtagClientManagementService {
 	PagedResponse<HashtagClientManagementResponse> findAllHashtagNoCrawl(int page, int size);
 	
 	PagedResponse<HashtagClientManagementResponse> findAllHashtagCrawl(int page, int size);
+
 }

@@ -266,7 +266,16 @@ public class CrawlJob {
 		simpMessagingTemplate.convertAndSendToUser(emailClient, "/private", message);
 
 	}
-
+	
+//	@Scheduled(fixedRate = JobConstants.THREE_SECONDS)
+//	public void scheduleFixedRateMessageTask() throws InterruptedException {
+//		String temp = "Task - " + new Date().toString();
+//		Message message = new Message();
+//		message.setMessage("There is a new request pending");
+//		message.setTitle("New request pending");
+//		simpMessagingTemplate.convertAndSend("/newrequest/public", message);
+//	}
+//
 //	@Scheduled(fixedRate = JobConstants.ONE_MINUTE)
 //	public void scheduleFixedRateMessageTask() throws InterruptedException {
 //		String temp = "Task - " + new Date().toString();

@@ -18,7 +18,9 @@ public class PackageConstants {
 	
 	public static final String CREATED_PACKAGE_SUCCESSFULLY = "Created package successfully";
 	
-	public static final String CREATED_PACKAGE_CREATED_FAILED = "Created package failed";
+	public static final String CREATED_PACKAGE_FAILED = "Created package failed";
+	
+	public static final String CREATED_EXTRA_PACKAGE_FAILED = "Created extra package failed";
 	
 	public static final String PACKAGE_NOT_EXISTS = "Package is not exists";
 	
