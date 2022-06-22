@@ -188,7 +188,7 @@ public class StaffServiceImpl implements StaffService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 			}
 
-			StringBuilder linkVerification = new StringBuilder(URL + "api/client/confirm-request?token=");
+			StringBuilder linkVerification = new StringBuilder(URL + "api/auth/client/confirm-request?token=");
 			StringBuilder token = new StringBuilder(client.get().getId().toString());
 
 			linkVerification.append(token);
