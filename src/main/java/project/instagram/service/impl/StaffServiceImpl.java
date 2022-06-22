@@ -149,6 +149,13 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	public ResponseEntity<MessageResponse> updateRequest(UpdateRequestProcessing updateRequestProcessing) {
 		MessageResponse messageResponse = new MessageResponse();
+		
+		if (!redisTemplate.hasKey(updateRequestProcessing.getRequestId())) {
+			messageResponse.setMessage(RequestConstants.REQUEST_FAILED);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
 
 		Optional<Client> client = clientRepository.findById(UUID.fromString(updateRequestProcessing.getClientId()));
 
@@ -157,7 +164,6 @@ public class StaffServiceImpl implements StaffService {
 		Optional<project.instagram.entity.Package> extraPackage = packageRepository
 				.findPackageByNameAndTypeOfPackage(updateRequestProcessing.getExtraPackageName(), typeOfPackage);
 
-		
 		try {
 			if (!RequestConstants.ACCEPT_REQUEST.equals(updateRequestProcessing.getStatusRequest())) {
 				StringBuilder message = new StringBuilder("Wellcome ");
