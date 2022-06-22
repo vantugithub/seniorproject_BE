@@ -447,9 +447,9 @@ public class ClientServiceImpl implements ClientService {
 		return calendar;
 	}
 
-	private TransactionPackage createTransactionPackage(Optional<Package> existsPackage) {
+	private TransactionPackage createTransactionPackage(Optional<Package> existsPackage, Client client) {
 		TransactionPackage newTransactionPackage = new TransactionPackage();
-		Client client = clientRepository.findByEmail(securityAuditorAware.getCurrentAuditor().get()).get();
+		
 		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
 
 		newTransactionPackage.setClient(client);
@@ -543,7 +543,7 @@ public class ClientServiceImpl implements ClientService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 
-		TransactionPackage newTransactionPackage = createTransactionPackage(extraPackage);
+		TransactionPackage newTransactionPackage = createTransactionPackage(extraPackage, client.get());
 
 		if (newTransactionPackage == null) {
 			messageResponse.setMessage(PackageConstants.PURCHASED_THE_EXTRA_PACKAGE_FAILED);
