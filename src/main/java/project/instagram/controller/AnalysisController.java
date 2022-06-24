@@ -48,4 +48,10 @@ public class AnalysisController {
 
 		return transactionPackageService.getRevenueClientUsingExtraPackagesTemp(yearStr, 3);
 	}
+	
+	@GetMapping(path = "/hashtags")
+	public ResponseEntity<MessageResponse> getAnalysisHashtags(){ 
+		
+		return null;
+	}
 }

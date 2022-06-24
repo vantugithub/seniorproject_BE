@@ -505,6 +505,7 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 		String startYearStr = yearStr;
 		String startDateTimeStr = startYearStr + "-01-01";
 		String endDateTimeStr = String.valueOf(Integer.parseInt(startYearStr) + (Integer) 1) + "-01-01";
+		int currentMonth = dateTimeZoneUtils.getCurrentMonth();
 
 		Date startDate = dateTimeZoneUtils.formatDateTime(startDateTimeStr);
 		Date endDate = dateTimeZoneUtils.formatDateTime(endDateTimeStr);
@@ -525,9 +526,13 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 			for (TransactionPackage transactionPackage : transactionPackages) {
 
 				String monthStr = transactionPackage.getIssuedeDate().toString().split("-")[1];
-
-				counter.put(monthStr, counter.get(monthStr) + 1);
-
+				int month = Integer.parseInt(monthStr);
+				if (month - currentMonth <= 0) {
+					System.out.println(month);
+					counter.put(monthStr, counter.get(monthStr) + 1);
+				}else {
+					counter.put(monthStr, 0);
+				}
 			}
 			counters.add(counter);
 		}
@@ -542,7 +547,6 @@ public class TransactionPackageServiceImpl implements TransactionPackageService 
 				AnalysisMemberResponse analysisMemberResponse = new AnalysisMemberResponse();
 				analysisMemberResponse.setCount(entry.getValue());
 				analysisMemberResponse.setMonthStr(entry.getKey());
-				System.out.println(entry.getKey());
 				analysisMemberResponse.setTypeOfMember(packages.get(i).getName());
 				analysisMemberResponses.add(analysisMemberResponse);
 			}

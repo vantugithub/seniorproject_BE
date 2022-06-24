@@ -28,4 +28,9 @@ public interface HashtagRunningHistoryRepository extends JpaRepository<HashtagRu
 			+ "AND running_time >= ?2 AND running_time <= ?3 AND client = ?4", nativeQuery = true)
 	List<HashtagRunningHistory> findAllByHashtagAndPriodOfTime(String hashtagStr, Date startDate, Date endDate,
 			Client client);
+
+	@Query(value = "SELECT h.id, h.running_time, h.status, h.type, h.client, h.hashtag, h.transaction_package, "
+			+ "h.crawl_quantity FROM hashtag_running_histories h WHERE "
+			+ "h.running_time >= ?1 and h.running_time < ?2", nativeQuery = true)
+	List<HashtagRunningHistory> getAllHashtagsByPeriodOfTime(Date startDate, Date endDate);
 }

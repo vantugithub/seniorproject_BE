@@ -1,7 +1,5 @@
 package project.instagram.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -117,19 +115,19 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 		return calendar.getTime();
 	}
 
-	private Date convertStringToDate(String dateString) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = null;
-		try {
-
-			date = formatter.parse(dateString);
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return date;
-	}
+//	private Date convertStringToDate(String dateString) {
+//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		Date date = null;
+//		try {
+//
+//			date = formatter.parse(dateString);
+//
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return date;
+//	}
 
 	private Set<TransactionPackage> sortTransactionPackagesByExpiredDate(Set<TransactionPackage> transactionPackages) {
 
@@ -296,25 +294,25 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 		return -1;
 	}
 
-	@Override
-	public PagedResponse<DataCrawlResponse> findAllDataCrawls(int page, int size, String date, String hashtagName) {
-		Pageable pageable = PageRequest.of(page, size);
-
-		Hashtag hashtag = hashtagRepository.getById(hashtagName);
-
-		Page<DataCrawl> dataCrawls = dataCrawlRepository
-				.findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(pageable,
-						getRunningTime(convertStringToDate(date)), hashtag);
-
-		List<DataCrawlResponse> crawlResponses = new ArrayList<DataCrawlResponse>(dataCrawls.getContent().size());
-
-		for (DataCrawl dataCrawl : dataCrawls.getContent()) {
-			crawlResponses.add(createDataCrawlsResponse(dataCrawl));
-		}
-
-		return new PagedResponse<>(crawlResponses, dataCrawls.getNumber(), dataCrawls.getSize(),
-				dataCrawls.getTotalElements(), dataCrawls.getTotalPages(), dataCrawls.isLast());
-	}
+//	@Override
+//	public PagedResponse<DataCrawlResponse> findAllDataCrawls(int page, int size, String date, String hashtagName) {
+//		Pageable pageable = PageRequest.of(page, size);
+//
+//		Hashtag hashtag = hashtagRepository.getById(hashtagName);
+//
+//		Page<DataCrawl> dataCrawls = dataCrawlRepository
+//				.findAllByCreatedDatePostLessThanEqualAndHashtagOrderByCreatedDatePostDesc(pageable,
+//						getRunningTime(convertStringToDate(date)), hashtag);
+//
+//		List<DataCrawlResponse> crawlResponses = new ArrayList<DataCrawlResponse>(dataCrawls.getContent().size());
+//
+//		for (DataCrawl dataCrawl : dataCrawls.getContent()) {
+//			crawlResponses.add(createDataCrawlsResponse(dataCrawl));
+//		}
+//
+//		return new PagedResponse<>(crawlResponses, dataCrawls.getNumber(), dataCrawls.getSize(),
+//				dataCrawls.getTotalElements(), dataCrawls.getTotalPages(), dataCrawls.isLast());
+//	}
 
 	private DataCrawlResponse createDataCrawlsResponse(DataCrawl dataCrawl) {
 		DataCrawlResponse dataCrawlResponse = mapper.map(dataCrawl, DataCrawlResponse.class);
@@ -410,13 +408,6 @@ public class DataCrawlServiceImpl implements DataCrawlService {
 			messageResponse.setStatus(HttpStatus.OK.value());
 			StringBuilder urlForward = new StringBuilder(
 					URL + "api/client/data-crawls/?page=0&size=15&hashtagRunningHistoryId="+hashtagRunningHistory.getId());
-//
-//			ParameterCrawlDataPageResponse parameterCrawlDataPageResponse = new ParameterCrawlDataPageResponse();
-//			parameterCrawlDataPageResponse.setPage(1);
-//			parameterCrawlDataPageResponse.setSize(15);
-//			parameterCrawlDataPageResponse.setDate(currentDate.toString());
-//			parameterCrawlDataPageResponse.setUrl(urlForward.toString());
-//			parameterCrawlDataPageResponse.setHashtag(hashtagName);
 
 			messageResponse.setData(urlForward);
 

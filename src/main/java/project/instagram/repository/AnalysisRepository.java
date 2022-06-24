@@ -1,5 +1,7 @@
 package project.instagram.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +13,6 @@ import project.instagram.entity.Hashtag;
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 	Page<Analysis> findAllByHashtagAndDateOfAnalysisOrderByIdDesc(Hashtag hashtag, String date, Pageable pageable);
-
+	
+	Optional<Analysis> findTopByHashtagOrderByIdDesc(Hashtag hashtag);
 }

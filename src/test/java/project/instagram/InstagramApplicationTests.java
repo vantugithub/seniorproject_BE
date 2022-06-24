@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.RestTemplate;
 
 import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.entity.Analysis;
@@ -257,6 +258,32 @@ class InstagramApplicationTests {
 			Set<Map.Entry<String, Integer>> mappingGeeks = counter.entrySet();
 	        System.out.println("Set of Keys and Values : "+mappingGeeks);
 		}
+
+	}
+	
+	@Test
+	void test13() {
+		
+		
+		Date startDate = dateTimeZoneUtils.formatDateTime("2022" + "-06-01");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(startDate);
+		calendar.add(Calendar.MONTH, 1);
+		System.out.println(startDate.toString());
+		System.out.println(calendar.getTime().toString());
+		
+	}
+	
+	@Test
+	void test14() {
+		String hashtags = "awesomehongkong insidehongkong discoverhongkong hongkong hk hkig cityscape wanderlust followforfollowback travel instagram photooftheday passionpassport fitnesshk photography hkigers fujifilm naturelovers fujifilmglobal moodygrams landscape travelgram lifeofadventure igers fitnessmotivation justgoshoot agameoftones hongkong hikingadventures ";
+		String uri = "http://127.0.0.1:5000/classify/"+hashtags;
+
+	    RestTemplate restTemplate = new RestTemplate();
+	    @SuppressWarnings("unchecked")
+		List<String> result = restTemplate.getForObject(uri, List.class);
+
+	    System.out.println(result.toString());
 
 	}
 

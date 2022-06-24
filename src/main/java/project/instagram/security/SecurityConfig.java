@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling().authenticationEntryPoint(jwtUnAuthorizedResponseAuthenticationEntryPoint).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-            .antMatchers("/api/client/**").hasAnyRole(ROLE_CLIENT)
+            .antMatchers("/api/client/**","/api/recommmend/**").hasAnyRole(ROLE_CLIENT)
             .antMatchers("/api/admin/**").hasAnyRole(ROLE_ADMIN)
             .antMatchers("/api/staff/**").hasAnyRole(ROLE_STAFF)
             .antMatchers("/api/manager/**").hasAnyRole(ROLE_MANAGER)
