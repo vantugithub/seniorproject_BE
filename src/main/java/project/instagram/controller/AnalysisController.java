@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.instagram.response.MessageResponse;
+import project.instagram.service.HashtagRunningHistoryService;
 import project.instagram.service.TransactionPackageService;
 
 @RestController
@@ -19,6 +20,9 @@ public class AnalysisController {
 
 	@Autowired
 	private TransactionPackageService transactionPackageService;
+	
+	@Autowired
+	private HashtagRunningHistoryService hashtagRunningHistoryService;
 
 	@GetMapping(path = "/client-using-package")
 	public ResponseEntity<MessageResponse> getAnalysisClientUsingPackages(
@@ -48,10 +52,10 @@ public class AnalysisController {
 
 		return transactionPackageService.getRevenueClientUsingExtraPackagesTemp(yearStr, 3);
 	}
-	
+
 	@GetMapping(path = "/hashtags")
-	public ResponseEntity<MessageResponse> getAnalysisHashtags(){ 
+	public ResponseEntity<MessageResponse> getAnalysisHashtags(@RequestParam(name = "yearStr", required = true) String yearStr){ 
 		
-		return null;
+		return hashtagRunningHistoryService.getAnalysisHashtags(yearStr);
 	}
 }

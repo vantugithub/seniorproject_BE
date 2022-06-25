@@ -1,7 +1,6 @@
 package project.instagram.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import project.instagram.common.enums.constants.RequestConstants;
 import project.instagram.entity.Client;
 import project.instagram.entity.Hashtag;
 import project.instagram.entity.HashtagRunningHistory;
-import project.instagram.entity.Package;
 import project.instagram.repository.ClientRepository;
 import project.instagram.repository.HashtagRepository;
 import project.instagram.repository.HashtagRunningHistoryRepository;
@@ -33,7 +33,7 @@ public class HashtagRunningHistoryServiceImpl implements HashtagRunningHistorySe
 
 	@Autowired
 	private ModelMapper mapper;
-	
+
 	@Autowired
 	private DateTimeZoneUtils dateTimeZoneUtils;
 
@@ -103,48 +103,69 @@ public class HashtagRunningHistoryServiceImpl implements HashtagRunningHistorySe
 				hashtagRunningHistories.getSize(), hashtagRunningHistories.getTotalElements(),
 				hashtagRunningHistories.getTotalPages(), hashtagRunningHistories.isLast());
 	}
-	
-	
-//	private HashMap<String, HashMap<String, Double>> createHashMapForHashtags(List<HashtagRunningHistory> runningHistories) {
-//		HashMap<String, HashMap<String, Integer>> counters = new HashMap<String, HashMap<String, Integer>>();
-//		
-//		for (HashtagRunningHistory hashtagRunningHistory : runningHistories) {
-//			
-//		}
-//
-//		for (int i = 1; i <= 12; i++) {
-//			HashMap<String, Double> counter = new HashMap<String, Double>();
-//			for (Package pac : extraPackages) {
-//				counter.put(pac.getName(), 0.0);
-//			}
-//			if (i >= 10) {
-//				counters.put(String.valueOf(i), counter);
-//			} else {
-//				counters.put("0" + String.valueOf(i), counter);
-//			}
-//		}
-//
-//		return counters;
-//	}
 
+	private HashMap<String, HashMap<String, Integer>> createHashMap() {
+
+		HashMap<String, HashMap<String, Integer>> counters = new HashMap<String, HashMap<String, Integer>>();
+
+		for (int i = 1; i <= 12; i++) {
+			HashMap<String, Integer> counter = new HashMap<String, Integer>();
+			if (i >= 10) {
+				counters.put(String.valueOf(i), counter);
+			} else {
+				counters.put("0" + String.valueOf(i), counter);
+			}
+		}
+
+		return counters;
+	}
+
+	private HashMap<String, HashMap<String, Integer>> createHashMapForHashtags(
+			List<HashtagRunningHistory> runningHistories) {
+
+		HashMap<String, HashMap<String, Integer>> counters = createHashMap();
+
+		for (HashtagRunningHistory hashtagRunningHistory : runningHistories) {
+
+			String monthStr = hashtagRunningHistory.getRunningTime().toString().split("-")[1];
+
+			HashMap<String, Integer> hashMapHashtag = counters.get(monthStr);
+			if (hashMapHashtag.containsKey(hashtagRunningHistory.getHashtag().getName())) {
+				hashMapHashtag.put(hashtagRunningHistory.getHashtag().getName(),
+						hashMapHashtag.get(hashtagRunningHistory.getHashtag().getName()) + 1);
+			} else {
+				hashMapHashtag.put(hashtagRunningHistory.getHashtag().getName(), 1);
+			}
+		}
+
+		return counters;
+	}
 
 	@Override
-	public ResponseEntity<MessageResponse> getAnalysisHashtags(String yearStr,String monthStr) {
-		
-		String startDateTimeStr = yearStr + "-" + monthStr + "-01";
+	public ResponseEntity<MessageResponse> getAnalysisHashtags(String yearStr) {
+
+		String startYearStr = yearStr;
+		String startDateTimeStr = startYearStr + "-01-01";
+		String endDateTimeStr = String.valueOf(Integer.parseInt(startYearStr) + (Integer) 1) + "-01-01";
+
 		Date startDate = dateTimeZoneUtils.formatDateTime(startDateTimeStr);
+		Date endDate = dateTimeZoneUtils.formatDateTime(endDateTimeStr);
+
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.setTime(startDate);
+//		calendar.add(Calendar.MONTH, 1);
+
+//		Date endDate = calendar.getTime();
+
+		List<HashtagRunningHistory> runningHistories = hashtagRunningHistoryRepository
+				.getAllHashtagsByPeriodOfTime(startDate, endDate);
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(startDate);
-		calendar.add(Calendar.MONTH, 1);
+		MessageResponse messageResponse = new MessageResponse();
+		messageResponse.setStatus(HttpStatus.OK.value());
+		messageResponse.setData(createHashMapForHashtags(runningHistories));
+		messageResponse.setMessage(RequestConstants.REQUEST_SUCCESS);
 		
-		Date endDate = calendar.getTime();
-		
-		List<HashtagRunningHistory> runningHistories = hashtagRunningHistoryRepository.getAllHashtagsByPeriodOfTime(startDate, endDate);
-		
-		return null;
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
-	
-	
 
 }

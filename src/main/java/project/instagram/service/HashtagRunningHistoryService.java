@@ -11,5 +11,5 @@ public interface HashtagRunningHistoryService {
 
 	PagedResponse<HashtagRunningHistoryResponse> findAllByClientAndHashtag(int page, int size, String hashtag);
 
-	ResponseEntity<MessageResponse> getAnalysisHashtags(String yearStr, String monthStr);
+	ResponseEntity<MessageResponse> getAnalysisHashtags(String yearStr);
 }
