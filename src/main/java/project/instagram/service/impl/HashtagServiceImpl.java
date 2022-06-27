@@ -385,4 +385,25 @@ public class HashtagServiceImpl implements HashtagServive {
 		return hashtagResponse;
 	}
 
+	@Override
+	public ResponseEntity<MessageResponse> createHashtagByManager(String hashtagName) {
+		MessageResponse messageResponse = new MessageResponse();
+		String cleanHashtagName = hashtagName.replace(" ", "").toLowerCase();
+		Optional<Hashtag> hashtag = hashtagRepository.findById(cleanHashtagName);
+
+		if (!hashtag.isEmpty()) {
+			messageResponse.setMessage(HashtagConstants.HASHTAG_EXISTS);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+		Hashtag newHashtag = new Hashtag(hashtagName);
+		hashtagRepository.save(newHashtag);
+
+		messageResponse.setMessage(HashtagConstants.CREATED_HASHTAG_SUCCESSFULLY);
+		messageResponse.setStatus(HttpStatus.OK.value());
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
 }

@@ -37,7 +37,7 @@ public class ManagerController {
 
 	@Autowired
 	private BlackHashtagService blackHashtagService;
-	
+
 	@Autowired
 	private HashtagServive hashtagServive;
 
@@ -107,13 +107,20 @@ public class ManagerController {
 
 		return blackHashtagService.deleteBlackHashtag(name);
 	}
-	
+
 	@GetMapping(value = "/hashtags")
 	public PagedResponse<HashtagResponse> getAllHashtags(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		return hashtagServive.findAllHashtags(page, size);
+	}
+
+	@PostMapping(value = "/hashtags")
+	public ResponseEntity<MessageResponse> createHashtagByManager(
+			@RequestParam(name = "hashtag", required = true) String hashtag) {
+
+		return hashtagServive.createHashtagByManager(hashtag);
 	}
 
 }

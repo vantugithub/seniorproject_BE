@@ -14,4 +14,6 @@ public interface HashtagServive {
 	ResponseEntity<MessageResponse> enableCrawlHashtagByClient(String hashtagName, String dateCrawlStr);
 	
 	PagedResponse<HashtagResponse> findAllHashtags(int page, int size);
+	
+	ResponseEntity<MessageResponse> createHashtagByManager(String hashtagName);
 }
