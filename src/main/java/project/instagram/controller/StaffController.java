@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import project.instagram.response.MessageResponse;
 import project.instagram.response.PackageResponse;
 import project.instagram.response.PagedResponse;
 import project.instagram.response.RequestResponse;
+import project.instagram.response.UpdateRequestProcessing;
 import project.instagram.service.PackageService;
 import project.instagram.service.StaffService;
 
@@ -83,10 +85,9 @@ public class StaffController {
 		return staffService.getPendingRequest();
 	}
 
-	@PutMapping(path = "/request-processing/{requestId}")
-	public ResponseEntity<MessageResponse> updateRequest(
-			@PathVariable(name = "requestId", required = true) String requestId) {
+	@PutMapping(path = "/request-processing")
+	public ResponseEntity<MessageResponse> updateRequest(@RequestBody UpdateRequestProcessing updateRequestProcessing) {
 
-		return staffService.updateRequest(requestId);
+		return staffService.updateRequest(updateRequestProcessing);
 	}
 }

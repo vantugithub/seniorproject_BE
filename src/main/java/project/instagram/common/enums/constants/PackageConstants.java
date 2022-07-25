@@ -18,7 +18,9 @@ public class PackageConstants {
 	
 	public static final String CREATED_PACKAGE_SUCCESSFULLY = "Created package successfully";
 	
-	public static final String CREATED_PACKAGE_CREATED_FAILED = "Created package failed";
+	public static final String CREATED_PACKAGE_FAILED = "Created package failed";
+	
+	public static final String CREATED_EXTRA_PACKAGE_FAILED = "Created extra package failed";
 	
 	public static final String PACKAGE_NOT_EXISTS = "Package is not exists";
 	
@@ -36,6 +38,8 @@ public class PackageConstants {
 	
 	public static final String PURCHASED_THE_EXTRA_PACKAGE_SUCCESSFULLY = "Purchased the extra package Successfully";
 	
+	public static final String PURCHASED_THE_EXTRA_PACKAGE_FAILED = "Purchased the extra package failed";
+	
 	public static final String UPGRADE_PACKAGE_FAILED = "Upgrade package failed";
 	
 	public static final String PACKAGE_TYPE = "Package";
@@ -45,5 +49,11 @@ public class PackageConstants {
 	public static final String CLIENT_HAVE_NOT_VALID_EXTRA_PACKAGE = "Client have not valid extra packahge";
 	
 	public static final String GET_SUCCESS = "Get successfully";
+	
+	public static final String FREE_PACKAGE = "Free";
+	
+	public static final String PREMIUM_PACKAGE = "Premium";
+	
+	public static final String STANDARD_PACKAGE = "Standard";
 	
 }

@@ -1,5 +1,7 @@
 package project.instagram.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,14 +18,21 @@ import org.springframework.stereotype.Service;
 
 import project.instagram.common.enums.RoleName;
 import project.instagram.common.enums.constants.CommonConstants;
+import project.instagram.common.enums.constants.PackageConstants;
 import project.instagram.common.enums.constants.UserConstants;
 import project.instagram.common.enums.constants.Validation;
 import project.instagram.entity.Client;
+import project.instagram.entity.Package;
 import project.instagram.entity.Role;
 import project.instagram.entity.Staff;
+import project.instagram.entity.TransactionPackage;
+import project.instagram.entity.TypeOfPackage;
 import project.instagram.repository.ClientRepository;
+import project.instagram.repository.PackageRepository;
 import project.instagram.repository.RoleRepository;
 import project.instagram.repository.StaffRepository;
+import project.instagram.repository.TransactionPackageRepository;
+import project.instagram.repository.TypeOfPackageRepository;
 import project.instagram.request.LoginFormRequest;
 import project.instagram.request.SignUpFormRequest;
 import project.instagram.request.UpdateAccountRequest;
@@ -35,6 +44,7 @@ import project.instagram.security.JwtTokenUtil;
 import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.AccountService;
 import project.instagram.utils.BCryptUtils;
+import project.instagram.utils.DateTimeZoneUtils;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -70,9 +80,74 @@ public class AccountServiceImpl implements AccountService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Autowired
+	private TypeOfPackageRepository typeOfPackageRepository;
+
+	@Autowired
 	private StaffRepository staffRepository;
 
-	MessageResponse validateLoginFormRequest(LoginFormRequest loginFormRequest) {
+	@Autowired
+	private PackageRepository packageRepository;
+
+	@Autowired
+	private DateTimeZoneUtils dateTimeZoneUtils;
+
+	@Autowired
+	private TransactionPackageRepository transactionPackageRepository;
+
+	private Calendar calculateCalendarOfPackage(Optional<Package> existsPackage) {
+		Calendar calendar = null;
+		if (existsPackage.get().getNumberOfMonths() == 0) {
+			return calendar;
+		}
+		calendar = Calendar.getInstance();
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+		calendar.setTime(currentDate);
+		calendar.add(Calendar.DATE, existsPackage.get().getNumberOfMonths() * 30);
+
+		return calendar;
+	}
+
+	private void createTransactionPackage(UUID idClient, Optional<Package> existsPackage) {
+		TransactionPackage newTransactionPackage = new TransactionPackage();
+
+		Client client = clientRepository.findById(idClient).get();
+
+		Date currentDate = dateTimeZoneUtils.getDateTimeZoneGMT();
+
+		newTransactionPackage.setClient(client);
+		newTransactionPackage.setParentPackage(existsPackage.get());
+		newTransactionPackage.setIssuedeDate(currentDate);
+
+		Calendar calendar = calculateCalendarOfPackage(existsPackage);
+		if (calculateCalendarOfPackage(existsPackage) == null) {
+			newTransactionPackage.setExpiredDate(null);
+		} else {
+			newTransactionPackage.setExpiredDate(calendar.getTime());
+		}
+		
+		transactionPackageRepository.save(newTransactionPackage);
+	}
+
+	private void addClientToFree(UUID idClient) {
+
+		Package freePackage = packageRepository.findPackageByName(PackageConstants.FREE_PACKAGE).get();
+
+		Optional<TypeOfPackage> packageType = typeOfPackageRepository.findByName(PackageConstants.PACKAGE_TYPE);
+		if (packageType.isEmpty()) {
+			return;
+		}
+
+		Optional<Package> existsPackage = packageRepository.findPackageByIdAndTypeOfPackage(freePackage.getId(),
+				packageType.get());
+
+		/*
+		 * this is where code payment service . . . . . . . . .
+		 */
+
+		createTransactionPackage(idClient, existsPackage);
+	}
+
+	private MessageResponse validateLoginFormRequest(LoginFormRequest loginFormRequest) {
 		MessageResponse messageResponse = new MessageResponse();
 
 		if (loginFormRequest.getEmail().equals("")) {
@@ -94,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
 		return messageResponse;
 	}
 
-	MessageResponse validationSignUpFormRequest(SignUpFormRequest signUpFormRequest) {
+	private MessageResponse validationSignUpFormRequest(SignUpFormRequest signUpFormRequest) {
 		MessageResponse messageResponse = new MessageResponse();
 
 		if (signUpFormRequest.getEmail().equals("")) {
@@ -124,7 +199,7 @@ public class AccountServiceImpl implements AccountService {
 		return messageResponse;
 	}
 
-	boolean sendVerificationMail(SignUpFormRequest signUpFormRequest, Client client) {
+	private boolean sendVerificationMail(SignUpFormRequest signUpFormRequest, Client client) {
 		try {
 			StringBuilder linkVerification = new StringBuilder(URL + "api/auth/register/active?id=");
 			linkVerification.append(client.getId().toString());
@@ -152,7 +227,8 @@ public class AccountServiceImpl implements AccountService {
 		return true;
 	}
 
-	ResponseEntity<MessageResponse> login(LoginFormRequest loginFormRequest, UserDetailsService userDetailsService) {
+	private ResponseEntity<MessageResponse> login(LoginFormRequest loginFormRequest,
+			UserDetailsService userDetailsService) {
 		MessageResponse messageResponse = validateLoginFormRequest(loginFormRequest);
 		if (messageResponse.getMessage() != null)
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
@@ -173,14 +249,14 @@ public class AccountServiceImpl implements AccountService {
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 	}
 
-	UserResponse createUserResponse(Client client) {
+	private UserResponse createUserResponse(Client client) {
 		UserResponse userResponse = mapper.map(client, UserResponse.class);
 		userResponse.setId(client.getId().toString());
 
 		return userResponse;
 	}
 
-	UserResponse createUserResponse(Staff staff) {
+	private UserResponse createUserResponse(Staff staff) {
 		UserResponse userResponse = mapper.map(staff, UserResponse.class);
 		userResponse.setId(staff.getId().toString());
 
@@ -235,6 +311,9 @@ public class AccountServiceImpl implements AccountService {
 			clientRepository.save(client);
 			messageResponse.setMessage(UserConstants.ACCOUNT_VERIFICATION_SUCCESSFUL);
 			messageResponse.setStatus(HttpStatus.OK.value());
+
+			addClientToFree(idClient);
+
 			return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
 		}
 		messageResponse.setMessage(UserConstants.ACCOUNT_VERIFICATION_FAILED);

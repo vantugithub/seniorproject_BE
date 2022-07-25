@@ -19,6 +19,9 @@ import project.instagram.response.HashtagClientManagementResponse;
 import project.instagram.response.HashtagRunningHistoryResponse;
 import project.instagram.response.MessageResponse;
 import project.instagram.response.PagedResponse;
+import project.instagram.response.RequestResponse;
+import project.instagram.response.TransactionPackageResponse;
+import project.instagram.service.AnalysisService;
 import project.instagram.service.ClientService;
 import project.instagram.service.DataCrawlService;
 import project.instagram.service.HashtagClientManagementService;
@@ -37,6 +40,9 @@ public class ClientController {
 
 	@Autowired
 	private DataCrawlService dataCrawlService;
+
+	@Autowired
+	private AnalysisService analysisService;
 
 	@Autowired
 	private HashtagClientManagementService hashtagClientManagementService;
@@ -78,10 +84,9 @@ public class ClientController {
 	public PagedResponse<DataCrawlResponse> getAllDataCrawls(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
-			@RequestParam(name = "date", required = true) String date,
-			@RequestParam(name = "hashtag", required = true) String hashtag) {
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
 
-		return dataCrawlService.findAllDataCrawls(page, size, date, hashtag);
+		return dataCrawlService.findAllDataCrawlsByHashtagRunningHistoryId(page, size, hashtagRunningHistoryId);
 	}
 
 	@GetMapping(value = "/hashtags/no-crawl")
@@ -101,9 +106,64 @@ public class ClientController {
 	}
 
 	@PostMapping(value = "/search")
-	public ResponseEntity<?> searchHashtag(
-			@RequestParam(name = "hashtag", required = true) String hashtag) {
+	public ResponseEntity<?> searchHashtag(@RequestParam(name = "hashtag", required = true) String hashtag) {
 
 		return dataCrawlService.searchHashtag(hashtag);
 	}
+
+	@GetMapping(value = "/export/data-crawls")
+	public PagedResponse<DataCrawlResponse> exportDataCrawls(
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
+
+		return dataCrawlService.exportDataCrawls(hashtagRunningHistoryId);
+	}
+
+	@GetMapping(value = "/analysis/data-crawls")
+	public ResponseEntity<MessageResponse> analysisDataCrawls(
+			@RequestParam(name = "hashtagRunningHistoryId", required = true) String hashtagRunningHistoryId) {
+
+		return analysisService.getAnalysisByDateAndClient(hashtagRunningHistoryId);
+	}
+
+	@GetMapping(value = "/transaction-packages")
+	public PagedResponse<TransactionPackageResponse> getAllTransactionPackage(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllTransactionPackage(page, size);
+	}
+
+	@GetMapping(value = "/hashtag-running/{hashtag}")
+	public PagedResponse<HashtagRunningHistoryResponse> getAllHashtagRunningHistories(
+			@PathVariable(name = "hashtag", required = true) String hashtag,
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return hashtagRunningHistoryService.findAllByClientAndHashtag(page, size, hashtag);
+	}
+
+	@GetMapping(value = "/analysis")
+	public ResponseEntity<MessageResponse> analysis(@RequestParam(name = "hashtag", required = true) String hashtagStr,
+			@RequestParam(name = "startDate", required = true) String startDate,
+			@RequestParam(name = "endDate", required = true) String endDate) {
+
+		return analysisService.getAnalysisHashtagByPeriodOfTime(hashtagStr, startDate, endDate);
+	}
+
+	@GetMapping(value = "/pending-requests/histories")
+	public PagedResponse<RequestResponse> getAllPendingRequestHistories(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllPendingRequests(page, size);
+	}
+
+	@GetMapping(value = "/not-pending-requests/histories")
+	public PagedResponse<RequestResponse> getAllNotPendingRequestHistories(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+
+		return clientService.findAllNotPendingRequests(page, size);
+	}
+
 }

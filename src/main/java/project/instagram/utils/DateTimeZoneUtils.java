@@ -60,5 +60,13 @@ public class DateTimeZoneUtils {
 		
 		return dateFormat;
 	}
+	
+	public int getCurrentMonth() {
+		Date date = getLocalDateTime();
+		@SuppressWarnings("deprecation")
+		int month = date.getMonth() + 1;
+		
+		return month;
+	}
 
 }

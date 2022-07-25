@@ -8,4 +8,6 @@ public class AppConstants {
 
 	public static final int MAX_PAGE_SIZE = 30;
 	
+	public static final String URI_RECOMMEND_HASHTAGS = "http://127.0.0.1:5000/classify/";
+	
 }

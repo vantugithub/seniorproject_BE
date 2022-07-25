@@ -18,6 +18,7 @@ import project.instagram.request.SignUpFormRequest;
 import project.instagram.request.UpdateAccountRequest;
 import project.instagram.response.MessageResponse;
 import project.instagram.service.AccountService;
+import project.instagram.service.ClientService;
 
 @RestController
 @RequestMapping(value = "/api/auth")
@@ -26,6 +27,9 @@ public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private ClientService clientService;
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<MessageResponse> register(@Validated @RequestBody SignUpFormRequest signUpFormRequest) {
@@ -66,6 +70,13 @@ public class AccountController {
 			) throws AuthenticationException {
 
 		return accountService.updateAccount(updateAccountRequest);
+	}
+	
+	@GetMapping(value = "/client/confirm-request")
+	public ResponseEntity<MessageResponse> requestsVerification(
+			@RequestParam(name = "token", required = true) String token) {
+
+		return clientService.verifiRequest(token);
 	}
 
 }

@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +33,9 @@ import project.instagram.repository.HashtagRepository;
 import project.instagram.repository.RunningSummaryRepository;
 import project.instagram.repository.TransactionPackageRepository;
 import project.instagram.repository.TypeOfPackageRepository;
+import project.instagram.response.HashtagResponse;
 import project.instagram.response.MessageResponse;
+import project.instagram.response.PagedResponse;
 import project.instagram.security.SecurityAuditorAware;
 import project.instagram.service.HashtagServive;
 import project.instagram.utils.DateTimeZoneUtils;
@@ -251,7 +257,6 @@ public class HashtagServiceImpl implements HashtagServive {
 		return (byte) (quantityCrawlOfPackage - runningSummary.getCrawledExtraPackageQuantity());
 	}
 
-	@SuppressWarnings("deprecation")
 	private void enableCrawlHashtag(Hashtag hashtag, Client client, Date dateCrawl, short crawlQuantity,
 			TransactionPackage transactionPackage) {
 
@@ -263,7 +268,7 @@ public class HashtagServiceImpl implements HashtagServive {
 //		hashtagClientManagement.setClientManagement(client);
 //		hashtagClientManagement.setHashtagClientManagement(hashtag);
 		hashtagClientManagement.setCrawlQuantity(crawlQuantity);
-		dateCrawl.setHours(-24);
+//		dateCrawl.setHours(-16);
 		hashtagClientManagement.setDateStartCrawl(dateCrawl);
 		hashtagClientManagement.setTransactionPackage(transactionPackage);
 
@@ -350,6 +355,52 @@ public class HashtagServiceImpl implements HashtagServive {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
 		}
 		messageResponse.setMessage(HashtagConstants.ENABLED_CRAWL_HASHTAG_SUCCESSFULLY);
+		messageResponse.setStatus(HttpStatus.OK.value());
+
+		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
+	}
+
+	@Override
+	public PagedResponse<HashtagResponse> findAllHashtags(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+
+		Page<Hashtag> hashtags = hashtagRepository.findAllByOrderByIssuedDateDesc(pageable);
+
+		List<HashtagResponse> hashtagResponses = new ArrayList<HashtagResponse>(hashtags.getContent().size());
+
+		for (Hashtag hashtag : hashtags.getContent()) {
+			hashtagResponses.add(createHashtagResponse(hashtag));
+		}
+
+		return new PagedResponse<>(hashtagResponses, hashtags.getNumber(), hashtags.getSize(),
+				hashtags.getTotalElements(), hashtags.getTotalPages(), hashtags.isLast());
+	}
+
+	private HashtagResponse createHashtagResponse(Hashtag hashtag) {
+
+		HashtagResponse hashtagResponse = new HashtagResponse();
+		hashtagResponse.setHashtag(hashtag.getName());
+		hashtagResponse.setIssuedDate(hashtag.getIssuedDate());
+
+		return hashtagResponse;
+	}
+
+	@Override
+	public ResponseEntity<MessageResponse> createHashtagByManager(String hashtagName) {
+		MessageResponse messageResponse = new MessageResponse();
+		String cleanHashtagName = hashtagName.replace(" ", "").toLowerCase();
+		Optional<Hashtag> hashtag = hashtagRepository.findById(cleanHashtagName);
+
+		if (!hashtag.isEmpty()) {
+			messageResponse.setMessage(HashtagConstants.HASHTAG_EXISTS);
+			messageResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+		}
+		Hashtag newHashtag = new Hashtag(hashtagName);
+		hashtagRepository.save(newHashtag);
+
+		messageResponse.setMessage(HashtagConstants.CREATED_HASHTAG_SUCCESSFULLY);
 		messageResponse.setStatus(HttpStatus.OK.value());
 
 		return ResponseEntity.status(HttpStatus.OK).body(messageResponse);

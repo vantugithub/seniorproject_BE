@@ -19,4 +19,14 @@ public class HashtagConstants {
 	public static final String ENABLED_CRAWL_HASHTAG_FAILED = "Enabled crawl hashtag failed";
 	
 	public static final String ENABLED_CRAWL_HASHTAG_SUCCESSFULLY ="Enabled cralw hashtag successfully";
+	
+	public static final String CREATED_BLACK_HASHTAG_SUCCESSFULLY = "Created black hashtag successfully";
+	
+	public static final String CREATED_BLACK_HASHTAG_FAILED = "Created black hashtag failed";
+	
+	public static final String BLACK_HASHTAG_EXISTS = "Black hashtag has been existed!";
+	
+	public static final String BLACK_HASHTAG_NOT_EXISTS = "Black hashtag hasn't been existed!";
+	
+	public static final String UPDATE_ACTIVE_BLACK_HASHTAG_SUCCESSFULLY = "Update active black hashtag successfully";
 }
